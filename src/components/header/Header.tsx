@@ -1,16 +1,16 @@
 import React, { ChangeEvent, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar, IconButton } from "@mui/material";
-import logo from "../assets/images/header-logo.png";
+import logo from "../../assets/images/header-logo.png";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AppsIcon from "@mui/icons-material/Apps";
-import HeaderRightSideOptions from "./HeaderRightSideOptions";
-import { useAppDispatch } from "../app/hooks";
-import { toggleOriginState } from "../features/menuStateSlice";
+import HeaderRightSideOptions from "../header/HeaderRightSideOptions";
+import { useAppDispatch } from "../..//app/hooks";
+import { toggleOriginState } from "../../features/menuStateSlice";
 
 function Header(): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>("");

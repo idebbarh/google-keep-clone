@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
-import { selectMenuState } from "../features/menuStateSlice";
+import { useAppSelector } from "../../app/hooks";
+import { selectMenuState } from "../../features/menuStateSlice";
 
 type Props = {
   Icon: any;
@@ -29,7 +29,7 @@ function SideBarOptions({ Icon, title, page, isLink }: Props): JSX.Element {
       } ${
         menuState.tempState || menuState.originState ? "" : "rounded-l-full"
       } ${
-        menuState.tempState || menuState.originState ? "" : "ml-2"
+        menuState.tempState || menuState.originState ? "" : "mx-2"
       } transition-all duration-100 ease-in-out`}
       onClick={isLink ? clickHandler : undefined}
     >
