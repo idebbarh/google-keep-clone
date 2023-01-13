@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar, IconButton } from "@mui/material";
 import logo from "../assets/images/header-logo.png";
@@ -6,19 +6,23 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import ViewStreamIcon from "@mui/icons-material/ViewStream";
-import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AppsIcon from "@mui/icons-material/Apps";
 import HeaderRightSideOptions from "./HeaderRightSideOptions";
+import { useAppDispatch } from "../app/hooks";
+import { toggleOriginState } from "../features/menuStateSlice";
 
 function Header(): JSX.Element {
   const [searchValue, setSearchValue] = useState<string>("");
+  const dispatch = useAppDispatch();
   return (
     <header className="flex justify-between items-center p-2 gap-9 border-b-border-gray border-solid border-b">
       <div className="flex justify-start items-center gap-2 text-main-text-color pr-9">
-        <IconButton color="inherit" size="large">
-          <MenuIcon />
-        </IconButton>
+        <div onClick={() => dispatch(toggleOriginState())}>
+          <IconButton color="inherit" size="large">
+            <MenuIcon />
+          </IconButton>
+        </div>
         <div className="flex items-center cursor-pointer">
           <img src={logo} alt="google keep logo" className="w-10 h-10" />
           <span className="ml-1 text-2xl font-normal">Keep</span>

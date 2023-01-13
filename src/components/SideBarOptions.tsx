@@ -1,5 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectMenuState } from "../features/menuStateSlice";
 
 type Props = {
   Icon: any;
@@ -10,6 +12,7 @@ type Props = {
 function SideBarOptions({ Icon, title, page, isLink }: Props): JSX.Element {
   const { pathname: path } = useLocation();
   const navigate = useNavigate();
+  const menuState = useAppSelector(selectMenuState);
   const clickHandler = (): void => {
     navigate(`/${page}`);
   };
@@ -17,13 +20,23 @@ function SideBarOptions({ Icon, title, page, isLink }: Props): JSX.Element {
     <div
       className={`flex items-center${
         path === "/" + page ? " bg-active-yellow" : ""
-      } px-5 py-3 text-icons-color rounded-r-full cursor-pointer ${
+      } ${
+        menuState.tempState || menuState.originState ? "px-5" : "px-3"
+      } py-3 ${
+        path === "/" + page ? "text-main-text-color" : "text-icons-color"
+      } rounded-r-full cursor-pointer ${
         path === "/" + page ? "hover:bg-active-yellow" : "hover:bg-hover-gray"
-      }`}
+      } ${
+        menuState.tempState || menuState.originState ? "" : "rounded-l-full"
+      } ${
+        menuState.tempState || menuState.originState ? "" : "ml-2"
+      } transition-all duration-100 ease-in-out`}
       onClick={isLink ? clickHandler : undefined}
     >
       <Icon />
-      <span className="w-48 pl-8 text-main-text-color">{title}</span>
+      {(menuState.tempState || menuState.originState) && (
+        <span className="w-48 pl-8 text-main-text-color">{title}</span>
+      )}
     </div>
   );
 }
