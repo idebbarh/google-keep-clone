@@ -1,5 +1,4 @@
-import { SvgIconComponent } from "@mui/icons-material";
-import { SvgIconProps, SvgIconTypeMap } from "@mui/material";
+import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React from "react";
 interface Props {
@@ -7,8 +6,8 @@ interface Props {
 }
 function TakeNoteFooterOptions({ Icon }: Props) {
   return (
-    <div>
-      <Icon />
+    <div className="cursor-pointer w-9 h-9 rounded-full text-lg flex items-center justify-center text-text-gray hover:bg-hover-gray">
+      <Icon fontSize="inherit" />
     </div>
   );
 }
