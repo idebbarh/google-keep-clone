@@ -1,4 +1,7 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import TakeNoteFooterOptions from "./TakeNoteFooterOptions";
+import AddAlertIcon from "@mui/icons-material/AddAlert";
+
 interface Note {
   noteValue: string;
   noteTitle: string;
@@ -48,9 +51,9 @@ function TakeNote() {
       )}
       <input
         type="text"
-        placeholder="Take a note"
+        placeholder="Take a note..."
         value={note.noteValue}
-        className="block bg-transparent border-none outline-none px-4 py-3 text-main-text-color placeholder:font-bold placeholder:text-text-gray placeholder:text-base placeholder:tracking-wide"
+        className="block bg-transparent border-none outline-none px-4 py-3 text-main-text-color placeholder:font-bold placeholder:text-text-gray placeholder:text-base placeholder:tracking-wide focus:placeholder:text-sm"
         name="noteValue"
         onChange={(e: ChangeEvent<HTMLInputElement>): void =>
           setNote((prevState) => ({
@@ -60,6 +63,11 @@ function TakeNote() {
         }
         onFocus={() => setIsFocus(true)}
       />
+      {isFocus && (
+        <div className="flex items-center gap-4">
+          <TakeNoteFooterOptions Icon={AddAlertIcon} />
+        </div>
+      )}
     </div>
   );
 }
