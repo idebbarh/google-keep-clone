@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useEffect,
-  createRef,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import TakeNoteFooterOptions from "./TakeNoteFooterOptions";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -15,8 +9,15 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
 import { TUseNote } from "../../screens/home/HomeScreen";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 
-function TakeNote({ note, setNote, setNotes, clearNote, notes }: TUseNote) {
+function TakeNote({
+  note,
+  setNote,
+  clearNote,
+  notes,
+}: Omit<TUseNote, "setNotes">) {
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const takeNoteRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ note: typeof note; notes: typeof notes }>({
@@ -32,12 +33,12 @@ function TakeNote({ note, setNote, setNotes, clearNote, notes }: TUseNote) {
   }, [note, notes]);
 
   useEffect(() => {
-    const nodeRef = takeNoteRef.current;
-    if (nodeRef) {
+    const noteRef = takeNoteRef.current;
+    if (noteRef) {
       document.addEventListener("click", handleClick);
     }
     return () => {
-      if (nodeRef) {
+      if (noteRef) {
         document.removeEventListener("click", handleClick);
       }
     };
@@ -54,12 +55,22 @@ function TakeNote({ note, setNote, setNotes, clearNote, notes }: TUseNote) {
   };
   const handleUnfocus = (): void => {
     if (stateRef.current?.note.noteTitle || stateRef.current?.note.noteValue) {
-      setNotes(() => [...stateRef.current?.notes, stateRef.current?.note]);
+      addNoteToNotes();
     }
     clearNote();
     setIsFocus(false);
   };
 
+  const addNoteToNotes = async () => {
+    try {
+      await addDoc(collection(db, "notes"), {
+        ...stateRef.current?.note,
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      alert(err);
+    }
+  };
   return (
     <div
       className="mt-8 mb-4 mx-auto border-border-gray border-solid border flex flex-col rounded-md max-w-[600px] shadow-tns text-main-text-color"
