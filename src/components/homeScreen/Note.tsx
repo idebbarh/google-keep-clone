@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import { TNote } from "../../screens/home/HomeScreen";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AddAlertIcon from "@mui/icons-material/AddAlert";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import ColorLensIcon from "@mui/icons-material/ColorLens";
+import ImageIcon from "@mui/icons-material/Image";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import NoteOptions from "./NoteOptions";
 function Note({ noteTitle, noteValue }: Omit<TNote, "noteId" | "createdAt">) {
   const [isHover, setIsHover] = useState<boolean>(false);
   return (
@@ -28,7 +35,18 @@ function Note({ noteTitle, noteValue }: Omit<TNote, "noteId" | "createdAt">) {
           </div>
         )}
       </div>
-      <div></div>
+      <div
+        className={`flex items-center px-2 pb-1 ${
+          isHover ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-300 ease-in-out`}
+      >
+        <NoteOptions Icon={AddAlertIcon} />
+        <NoteOptions Icon={PersonAddAlt1Icon} />
+        <NoteOptions Icon={ColorLensIcon} />
+        <NoteOptions Icon={ImageIcon} />
+        <NoteOptions Icon={ArchiveIcon} />
+        <NoteOptions Icon={MoreVertIcon} />
+      </div>
     </div>
   );
 }

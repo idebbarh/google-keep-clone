@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import TakeNoteFooterOptions from "./TakeNoteFooterOptions";
+import TakeNoteOptions from "./TakeNoteOptions";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
@@ -11,13 +11,67 @@ import RedoIcon from "@mui/icons-material/Redo";
 import { TUseNote } from "../../screens/home/HomeScreen";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
-
+interface TUseOption {
+  addInTheRedoAndUndoStore: (value: string) => void;
+  undo: () => boolean;
+  redo: () => boolean;
+  undoAndRedoStore: string[];
+  undoAndRedoStoreIndex: number;
+  resitUndoAndRedoStoreAndIndex: () => void;
+}
+function useOption(): TUseOption {
+  const [undoAndRedoStore, setUndoAndRedoStore] = useState<string[]>([]);
+  const [undoAndRedoStoreIndex, setUndoAndRedoStoreIndex] =
+    useState<number>(-1);
+  const addInTheRedoAndUndoStore = (value: string): void => {
+    const newStore = [
+      ...undoAndRedoStore.slice(0, undoAndRedoStoreIndex + 1),
+      value,
+    ];
+    setUndoAndRedoStore(() => newStore);
+    setUndoAndRedoStoreIndex(newStore.length - 1);
+  };
+  const undo = (): boolean => {
+    if (undoAndRedoStoreIndex > 0) {
+      setUndoAndRedoStoreIndex(() => undoAndRedoStoreIndex - 1);
+      return undoAndRedoStoreIndex > 0;
+    }
+    return false;
+  };
+  const redo = (): boolean => {
+    if (undoAndRedoStoreIndex < undoAndRedoStore.length - 1) {
+      setUndoAndRedoStoreIndex(() => undoAndRedoStoreIndex + 1);
+      return undoAndRedoStoreIndex < undoAndRedoStore.length - 1;
+    }
+    return false;
+  };
+  const resitUndoAndRedoStoreAndIndex = (): void => {
+    setUndoAndRedoStore([]);
+    setUndoAndRedoStoreIndex(-1);
+  };
+  return {
+    addInTheRedoAndUndoStore,
+    undo,
+    redo,
+    undoAndRedoStore,
+    undoAndRedoStoreIndex,
+    resitUndoAndRedoStoreAndIndex,
+  };
+}
 function TakeNote({
   note,
   setNote,
   clearNote,
   notes,
 }: Omit<TUseNote, "setNotes">) {
+  const {
+    addInTheRedoAndUndoStore,
+    undoAndRedoStore,
+    undoAndRedoStoreIndex,
+    undo,
+    redo,
+    resitUndoAndRedoStoreAndIndex,
+  } = useOption();
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const takeNoteRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ note: typeof note; notes: typeof notes }>({
@@ -59,6 +113,7 @@ function TakeNote({
     }
     clearNote();
     setIsFocus(false);
+    resitUndoAndRedoStoreAndIndex();
   };
 
   const addNoteToNotes = async () => {
@@ -70,6 +125,13 @@ function TakeNote({
     } catch (err) {
       alert(err);
     }
+  };
+  const handleNoteValueChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    addInTheRedoAndUndoStore(e.target.value);
+    setNote(() => ({
+      ...note,
+      [e.target.name]: e.target.value,
+    }));
   };
   return (
     <div
@@ -101,24 +163,19 @@ function TakeNote({
           isFocus ? "placeholder:text-sm" : "palceholder:text-base"
         } placeholder:tracking-wide`}
         name="noteValue"
-        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-          setNote(() => ({
-            ...note,
-            [e.target.name]: e.target.value,
-          }))
-        }
+        onChange={handleNoteValueChange}
         onFocus={() => setIsFocus(true)}
       />
       {isFocus && (
         <div className="flex items-center gap-4 px-4 pb-3">
-          <TakeNoteFooterOptions Icon={AddAlertIcon} />
-          <TakeNoteFooterOptions Icon={PersonAddAlt1Icon} />
-          <TakeNoteFooterOptions Icon={ColorLensIcon} />
-          <TakeNoteFooterOptions Icon={ImageIcon} />
-          <TakeNoteFooterOptions Icon={ArchiveIcon} />
-          <TakeNoteFooterOptions Icon={MoreVertIcon} />
-          <TakeNoteFooterOptions Icon={UndoIcon} />
-          <TakeNoteFooterOptions Icon={RedoIcon} />
+          <TakeNoteOptions Icon={AddAlertIcon} />
+          <TakeNoteOptions Icon={PersonAddAlt1Icon} />
+          <TakeNoteOptions Icon={ColorLensIcon} />
+          <TakeNoteOptions Icon={ImageIcon} />
+          <TakeNoteOptions Icon={ArchiveIcon} />
+          <TakeNoteOptions Icon={MoreVertIcon} />
+          <TakeNoteOptions Icon={UndoIcon} action="undo" actionHandler={undo} />
+          <TakeNoteOptions Icon={RedoIcon} action="redo" actionHandler={redo} />
           <button
             className="bg-none border-none capitalize text-main-text-color text-base font-normal ml-auto rounded-md py-1 px-6 hover:bg-hover-gray"
             onClick={handleUnfocus}
