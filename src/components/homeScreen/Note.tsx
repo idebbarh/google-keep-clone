@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { TNote } from "../../screens/home/HomeScreen";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -8,8 +7,17 @@ import ImageIcon from "@mui/icons-material/Image";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import NoteOptions from "./NoteOptions";
-function Note({ noteTitle, noteValue }: Omit<TNote, "noteId" | "createdAt">) {
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import { TNote } from "../../types/types";
+import useNoteOptions from "../../hooks/useNoteOptions";
+function Note({
+  noteTitle,
+  noteValue,
+  isArchived,
+  noteId,
+}: Pick<TNote, "noteTitle" | "noteValue" | "noteId" | "isArchived">) {
   const [isHover, setIsHover] = useState<boolean>(false);
+  const { archiveNote, unArchiveNote } = useNoteOptions();
   return (
     <div
       className="flex flex-col justify-between relative w-60 min-h-[100px] border-solid border border-border-gray rounded-lg text-main-text-color"
@@ -44,7 +52,19 @@ function Note({ noteTitle, noteValue }: Omit<TNote, "noteId" | "createdAt">) {
         <NoteOptions Icon={PersonAddAlt1Icon} />
         <NoteOptions Icon={ColorLensIcon} />
         <NoteOptions Icon={ImageIcon} />
-        <NoteOptions Icon={ArchiveIcon} />
+        {isArchived ? (
+          <NoteOptions
+            Icon={UnarchiveIcon}
+            action="unArchive"
+            unArchive={() => unArchiveNote(noteId)}
+          />
+        ) : (
+          <NoteOptions
+            Icon={ArchiveIcon}
+            action="archive"
+            archive={() => archiveNote(noteId)}
+          />
+        )}
         <NoteOptions Icon={MoreVertIcon} />
       </div>
     </div>

@@ -6,17 +6,17 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect } from "react";
-import TakeNote from "../../components/homeScreen/TakeNote";
 import Note from "../../components/homeScreen/Note";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
-function HomeScreen() {
-  const { note, setNote, notes, setNotes, clearNote } = useNote();
+
+function ArchiveScreen() {
+  const { notes, setNotes } = useNote();
   useEffect(() => {
     const q = query(
       collection(db, "notes"),
       orderBy("createdAt", "desc"),
-      where("isArchived", "==", false)
+      where("isArchived", "==", true)
     );
     const usub = onSnapshot(q, (querySnaphot) => {
       setNotes(
@@ -33,29 +33,20 @@ function HomeScreen() {
     });
     return usub;
   }, []);
-
   return (
-    <div>
-      <TakeNote
-        note={note}
-        setNote={setNote}
-        clearNote={clearNote}
-        notes={notes}
-      />
-      <div className="flex items-start gap-4 flex-wrap py-4 px-10">
-        {notes.map((note) => {
-          return (
-            <Note
-              noteTitle={note.noteTitle}
-              noteValue={note.noteValue}
-              noteId={note.noteId}
-              isArchived={note.isArchived}
-              key={note.noteId}
-            />
-          );
-        })}
-      </div>
+    <div className="flex items-start gap-4 flex-wrap py-4 px-10">
+      {notes.map((note) => {
+        return (
+          <Note
+            noteTitle={note.noteTitle}
+            noteValue={note.noteValue}
+            noteId={note.noteId}
+            isArchived={note.isArchived}
+            key={note.noteId}
+          />
+        );
+      })}
     </div>
   );
 }
-export default HomeScreen;
+export default ArchiveScreen;

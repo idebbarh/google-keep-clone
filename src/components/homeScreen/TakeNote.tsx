@@ -8,56 +8,10 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import UndoIcon from "@mui/icons-material/Undo";
 import RedoIcon from "@mui/icons-material/Redo";
-import { TUseNote } from "../../screens/home/HomeScreen";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
-interface TUseOption {
-  addInTheRedoAndUndoStore: (value: string) => void;
-  undo: () => boolean;
-  redo: () => boolean;
-  undoAndRedoStore: string[];
-  undoAndRedoStoreIndex: number;
-  resitUndoAndRedoStoreAndIndex: () => void;
-}
-function useOption(): TUseOption {
-  const [undoAndRedoStore, setUndoAndRedoStore] = useState<string[]>([]);
-  const [undoAndRedoStoreIndex, setUndoAndRedoStoreIndex] =
-    useState<number>(-1);
-  const addInTheRedoAndUndoStore = (value: string): void => {
-    const newStore = [
-      ...undoAndRedoStore.slice(0, undoAndRedoStoreIndex + 1),
-      value,
-    ];
-    setUndoAndRedoStore(() => newStore);
-    setUndoAndRedoStoreIndex(newStore.length - 1);
-  };
-  const undo = (): boolean => {
-    if (undoAndRedoStoreIndex > 0) {
-      setUndoAndRedoStoreIndex(() => undoAndRedoStoreIndex - 1);
-      return undoAndRedoStoreIndex > 0;
-    }
-    return false;
-  };
-  const redo = (): boolean => {
-    if (undoAndRedoStoreIndex < undoAndRedoStore.length - 1) {
-      setUndoAndRedoStoreIndex(() => undoAndRedoStoreIndex + 1);
-      return undoAndRedoStoreIndex < undoAndRedoStore.length - 1;
-    }
-    return false;
-  };
-  const resitUndoAndRedoStoreAndIndex = (): void => {
-    setUndoAndRedoStore([]);
-    setUndoAndRedoStoreIndex(-1);
-  };
-  return {
-    addInTheRedoAndUndoStore,
-    undo,
-    redo,
-    undoAndRedoStore,
-    undoAndRedoStoreIndex,
-    resitUndoAndRedoStoreAndIndex,
-  };
-}
+import { TUseNote } from "../../types/types";
+import useTakeNoteOptions from "../../hooks/useTakeNoteOptions";
 function TakeNote({
   note,
   setNote,
@@ -71,7 +25,7 @@ function TakeNote({
     undo,
     redo,
     resitUndoAndRedoStoreAndIndex,
-  } = useOption();
+  } = useTakeNoteOptions();
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const takeNoteRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ note: typeof note; notes: typeof notes }>({
@@ -121,6 +75,7 @@ function TakeNote({
       await addDoc(collection(db, "notes"), {
         ...stateRef.current?.note,
         createdAt: serverTimestamp(),
+        isArchived: false,
       });
     } catch (err) {
       alert(err);
@@ -174,8 +129,20 @@ function TakeNote({
           <TakeNoteOptions Icon={ImageIcon} />
           <TakeNoteOptions Icon={ArchiveIcon} />
           <TakeNoteOptions Icon={MoreVertIcon} />
-          <TakeNoteOptions Icon={UndoIcon} action="undo" actionHandler={undo} />
-          <TakeNoteOptions Icon={RedoIcon} action="redo" actionHandler={redo} />
+          <TakeNoteOptions
+            Icon={UndoIcon}
+            action="undo"
+            undo={() => undo({ setNote }, note)}
+            undoAndRedoStoreSize={undoAndRedoStore.length - 1}
+            undoAndRedoStoreIndex={undoAndRedoStoreIndex}
+          />
+          <TakeNoteOptions
+            Icon={RedoIcon}
+            action="redo"
+            redo={() => redo({ setNote }, note)}
+            undoAndRedoStoreSize={undoAndRedoStore.length - 1}
+            undoAndRedoStoreIndex={undoAndRedoStoreIndex}
+          />
           <button
             className="bg-none border-none capitalize text-main-text-color text-base font-normal ml-auto rounded-md py-1 px-6 hover:bg-hover-gray"
             onClick={handleUnfocus}

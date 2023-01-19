@@ -1,12 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-
-export interface MenuStateState {
-  value: {
-    originState: boolean;
-    tempState: boolean;
-  };
-}
+import { MenuStateState } from "../types/types";
 
 const initialState: MenuStateState = {
   value: {
