@@ -10,14 +10,13 @@ import Note from "../../components/homeScreen/Note";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
 
-function ArchiveScreen() {
+function TrashScreen() {
   const { notes, setNotes } = useNote();
   useEffect(() => {
     const q = query(
       collection(db, "notes"),
       orderBy("createdAt", "desc"),
-      where("isArchived", "==", true),
-      where("isTrashed", "==", false)
+      where("isTrashed", "==", true)
     );
     const usub = onSnapshot(q, (querySnaphot) => {
       setNotes(
@@ -52,4 +51,4 @@ function ArchiveScreen() {
     </div>
   );
 }
-export default ArchiveScreen;
+export default TrashScreen;

@@ -16,7 +16,8 @@ function HomeScreen() {
     const q = query(
       collection(db, "notes"),
       orderBy("createdAt", "desc"),
-      where("isArchived", "==", false)
+      where("isArchived", "==", false),
+      where("isTrashed", "==", false)
     );
     const usub = onSnapshot(q, (querySnaphot) => {
       setNotes(
@@ -26,6 +27,7 @@ function HomeScreen() {
             noteValue: doc.data().noteValue,
             createdAt: doc.data().createdAt,
             isArchived: doc.data().isArchived,
+            isTrashed: doc.data().isTrashed,
             noteId: doc.id,
           };
         })
@@ -33,7 +35,6 @@ function HomeScreen() {
     });
     return usub;
   }, []);
-
   return (
     <div>
       <TakeNote
@@ -50,6 +51,7 @@ function HomeScreen() {
               noteValue={note.noteValue}
               noteId={note.noteId}
               isArchived={note.isArchived}
+              isTrashed={note.isTrashed}
               key={note.noteId}
             />
           );

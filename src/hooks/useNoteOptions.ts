@@ -10,6 +10,14 @@ export default function useNoteOptions(): TNoteUseOptions {
     const docRef = doc(db, "notes", id);
     await updateDoc(docRef, { isArchived: false });
   };
+  const trashNote = async (id: string): Promise<void> => {
+    const docRef = doc(db, "notes", id);
+    await updateDoc(docRef, { isTrashed: true });
+  };
+  const unTrashNote = async (id: string): Promise<void> => {
+    const docRef = doc(db, "notes", id);
+    await updateDoc(docRef, { isTrashed: false });
+  };
 
-  return { archiveNote, unArchiveNote };
+  return { archiveNote, unArchiveNote, trashNote, unTrashNote };
 }

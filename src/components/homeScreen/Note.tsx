@@ -5,19 +5,26 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import ImageIcon from "@mui/icons-material/Image";
 import ArchiveIcon from "@mui/icons-material/Archive";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import NoteOptions from "./NoteOptions";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import DeleteIcon from "@mui/icons-material/Delete";
+import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { TNote } from "../../types/types";
 import useNoteOptions from "../../hooks/useNoteOptions";
 function Note({
   noteTitle,
   noteValue,
   isArchived,
+  isTrashed,
   noteId,
-}: Pick<TNote, "noteTitle" | "noteValue" | "noteId" | "isArchived">) {
+}: Pick<
+  TNote,
+  "noteTitle" | "noteValue" | "noteId" | "isArchived" | "isTrashed"
+>) {
   const [isHover, setIsHover] = useState<boolean>(false);
-  const { archiveNote, unArchiveNote } = useNoteOptions();
+  const { archiveNote, unArchiveNote, trashNote, unTrashNote } =
+    useNoteOptions();
   return (
     <div
       className="flex flex-col justify-between relative w-60 min-h-[100px] border-solid border border-border-gray rounded-lg text-main-text-color"
@@ -48,24 +55,43 @@ function Note({
           isHover ? "opacity-100" : "opacity-0"
         } transition-opacity duration-300 ease-in-out`}
       >
-        <NoteOptions Icon={AddAlertIcon} />
-        <NoteOptions Icon={PersonAddAlt1Icon} />
-        <NoteOptions Icon={ColorLensIcon} />
-        <NoteOptions Icon={ImageIcon} />
-        {isArchived ? (
+        {!isTrashed && <NoteOptions Icon={AddAlertIcon} />}
+        {!isTrashed && <NoteOptions Icon={PersonAddAlt1Icon} />}
+        {!isTrashed && <NoteOptions Icon={ColorLensIcon} />}
+        {!isTrashed && <NoteOptions Icon={ImageIcon} />}
+        {isArchived && !isTrashed && (
           <NoteOptions
             Icon={UnarchiveIcon}
             action="unArchive"
             unArchive={() => unArchiveNote(noteId)}
           />
-        ) : (
+        )}
+        {!isArchived && !isTrashed && (
           <NoteOptions
             Icon={ArchiveIcon}
             action="archive"
             archive={() => archiveNote(noteId)}
           />
         )}
-        <NoteOptions Icon={MoreVertIcon} />
+        {isTrashed && <NoteOptions Icon={DeleteForeverIcon} action="delete" />}
+        {isTrashed && (
+          <NoteOptions
+            Icon={RestoreFromTrashIcon}
+            action="untrash"
+            unTrash={() => {
+              unTrashNote(noteId);
+            }}
+          />
+        )}
+        {!isTrashed && (
+          <NoteOptions
+            Icon={DeleteIcon}
+            action="trash"
+            trash={() => {
+              trashNote(noteId);
+            }}
+          />
+        )}
       </div>
     </div>
   );

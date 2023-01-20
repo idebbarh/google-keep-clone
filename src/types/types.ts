@@ -4,8 +4,10 @@ import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 
 export interface TNoteUseOptions {
-  archiveNote: (id: string) => void;
-  unArchiveNote: (id: string) => void;
+  archiveNote: (id: string) => Promise<void>;
+  unArchiveNote: (id: string) => Promise<void>;
+  trashNote: (id: string) => Promise<void>;
+  unTrashNote: (id: string) => Promise<void>;
 }
 export interface TNote {
   noteTitle: string;
@@ -13,6 +15,7 @@ export interface TNote {
   createdAt: Timestamp;
   noteId: string;
   isArchived: boolean;
+  isTrashed: boolean;
 }
 export interface TUseNote {
   note: Pick<TNote, "noteTitle" | "noteValue">;
@@ -56,4 +59,6 @@ export interface TPropsNoteOptions {
   action?: string | null;
   archive?: (() => void) | null;
   unArchive?: (() => void) | null;
+  trash?: (() => void) | null;
+  unTrash?: (() => void) | null;
 }

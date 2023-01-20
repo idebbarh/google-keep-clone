@@ -6,6 +6,8 @@ function NoteOptions({
   action = null,
   archive = null,
   unArchive = null,
+  trash = null,
+  unTrash = null,
 }: TPropsNoteOptions) {
   const clickHandler = (): void => {
     if (action === "archive" && archive) {
@@ -14,6 +16,15 @@ function NoteOptions({
     }
     if (action === "unArchive" && unArchive) {
       unArchive();
+      return;
+    }
+    if (action === "trash" && trash) {
+      trash();
+      return;
+    }
+
+    if (action === "untrash" && unTrash) {
+      unTrash();
       return;
     }
   };

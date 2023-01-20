@@ -76,6 +76,7 @@ function TakeNote({
         ...stateRef.current?.note,
         createdAt: serverTimestamp(),
         isArchived: false,
+        isTrashed: false,
       });
     } catch (err) {
       alert(err);
