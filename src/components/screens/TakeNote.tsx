@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  createRef,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import TakeNoteOptions from "./TakeNoteOptions";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -12,6 +19,9 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { TUseNote } from "../../types/types";
 import useTakeNoteOptions from "../../hooks/useTakeNoteOptions";
+import BackgroundColorsContainer from "./BackgroundColorsContainer";
+import { colorVariant } from "../../utils/colorVariant";
+
 function TakeNote({
   note,
   setNote,
@@ -28,6 +38,10 @@ function TakeNote({
   } = useTakeNoteOptions();
   const [isFocus, setIsFocus] = useState<boolean>(false);
   const takeNoteRef = useRef<HTMLDivElement>(null);
+  const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
+  const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
+    useState<boolean>(false);
+  const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<{ note: typeof note; notes: typeof notes }>({
     note: note,
     notes: notes,
@@ -60,7 +74,16 @@ function TakeNote({
     ) {
       handleUnfocus();
     }
+    if (
+      !openBackgroundColorsContainerIconRef.current?.isSameNode(target) &&
+      !openBackgroundColorsContainerIconRef.current?.contains(target) &&
+      !backgroundColorsContainerRef.current?.isSameNode(target) &&
+      !backgroundColorsContainerRef.current?.contains(target)
+    ) {
+      setIsBackgroundColorContainerOpen(false);
+    }
   };
+
   const handleUnfocus = (): void => {
     if (stateRef.current?.note.noteTitle || stateRef.current?.note.noteValue) {
       addNoteToNotes();
@@ -91,7 +114,9 @@ function TakeNote({
   };
   return (
     <div
-      className="mt-8 mb-4 mx-auto border-border-gray border-solid border flex flex-col rounded-md max-w-[600px] shadow-tns text-main-text-color"
+      className={`relative ${
+        colorVariant[note.noteBackgroundColor]
+      } mt-8 mb-4 mx-auto border-border-gray border-solid border flex flex-col rounded-md max-w-[600px] shadow-tns text-main-text-color`}
       ref={takeNoteRef}
     >
       {isFocus && (
@@ -126,7 +151,14 @@ function TakeNote({
         <div className="flex items-center gap-4 px-4 pb-3">
           <TakeNoteOptions Icon={AddAlertIcon} />
           <TakeNoteOptions Icon={PersonAddAlt1Icon} />
-          <TakeNoteOptions Icon={ColorLensIcon} />
+          <TakeNoteOptions
+            action="backgroundcolor"
+            Icon={ColorLensIcon}
+            setIsBackgroundColorContainerOpen={() =>
+              setIsBackgroundColorContainerOpen((prevState) => !prevState)
+            }
+            ref={openBackgroundColorsContainerIconRef}
+          />
           <TakeNoteOptions Icon={ImageIcon} />
           <TakeNoteOptions Icon={ArchiveIcon} />
           <TakeNoteOptions Icon={MoreVertIcon} />
@@ -151,6 +183,13 @@ function TakeNote({
             close
           </button>
         </div>
+      )}
+      {isBackgroundColorContainerOpen && (
+        <BackgroundColorsContainer
+          ref={backgroundColorsContainerRef}
+          note={note}
+          setNote={setNote}
+        />
       )}
     </div>
   );

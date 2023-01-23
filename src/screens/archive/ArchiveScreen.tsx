@@ -6,7 +6,7 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect } from "react";
-import Note from "../../components/homeScreen/Note";
+import Note from "../../components/screens/Note";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
 
@@ -29,6 +29,7 @@ function ArchiveScreen() {
             isArchived: doc.data().isArchived,
             isTrashed: doc.data().isTrashed,
             noteId: doc.id,
+            noteBackgroundColor: doc.data().noteBackgroundColor,
           };
         })
       );
@@ -46,6 +47,7 @@ function ArchiveScreen() {
             isArchived={note.isArchived}
             isTrashed={note.isTrashed}
             key={note.noteId}
+            noteBackgroundColor={note.noteBackgroundColor}
           />
         );
       })}

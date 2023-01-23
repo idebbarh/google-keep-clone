@@ -13,7 +13,7 @@ export default function useTakeNoteOptions(): TTakeNoteUseOptions {
   };
   const undo = (
     setNote: Pick<TUseNote, "setNote">,
-    note: Pick<TNote, "noteTitle" | "noteValue">
+    note: Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">
   ): void => {
     if (undoAndRedoStoreIndex > 0) {
       setUndoAndRedoStoreIndex(() => undoAndRedoStoreIndex - 1);
@@ -25,7 +25,7 @@ export default function useTakeNoteOptions(): TTakeNoteUseOptions {
   };
   const redo = (
     setNote: Pick<TUseNote, "setNote">,
-    note: Pick<TNote, "noteTitle" | "noteValue">
+    note: Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">
   ): void => {
     if (undoAndRedoStoreIndex < undoAndRedoStore.length - 1) {
       setUndoAndRedoStoreIndex(() => undoAndRedoStoreIndex + 1);

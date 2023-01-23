@@ -1,6 +1,6 @@
 import { TNoteUseOptions } from "../types/types";
 import { db } from "../firebase/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 export default function useNoteOptions(): TNoteUseOptions {
   const archiveNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);
@@ -19,5 +19,9 @@ export default function useNoteOptions(): TNoteUseOptions {
     await updateDoc(docRef, { isTrashed: false });
   };
 
-  return { archiveNote, unArchiveNote, trashNote, unTrashNote };
+  const deleteNote = async (id: string): Promise<void> => {
+    const docRef = doc(db, "notes", id);
+    await deleteDoc(docRef);
+  };
+  return { archiveNote, unArchiveNote, trashNote, unTrashNote, deleteNote };
 }

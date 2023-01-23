@@ -6,8 +6,8 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect } from "react";
-import TakeNote from "../../components/homeScreen/TakeNote";
-import Note from "../../components/homeScreen/Note";
+import TakeNote from "../../components/screens/TakeNote";
+import Note from "../../components/screens/Note";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
 function HomeScreen() {
@@ -29,6 +29,7 @@ function HomeScreen() {
             isArchived: doc.data().isArchived,
             isTrashed: doc.data().isTrashed,
             noteId: doc.id,
+            noteBackgroundColor: doc.data().noteBackgroundColor,
           };
         })
       );
@@ -52,6 +53,7 @@ function HomeScreen() {
               noteId={note.noteId}
               isArchived={note.isArchived}
               isTrashed={note.isTrashed}
+              noteBackgroundColor={note.noteBackgroundColor}
               key={note.noteId}
             />
           );

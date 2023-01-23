@@ -12,22 +12,29 @@ import RestoreFromTrashIcon from "@mui/icons-material/RestoreFromTrash";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { TNote } from "../../types/types";
 import useNoteOptions from "../../hooks/useNoteOptions";
+import { colorVariant } from "../../utils/colorVariant";
 function Note({
   noteTitle,
   noteValue,
   isArchived,
   isTrashed,
   noteId,
+  noteBackgroundColor,
 }: Pick<
   TNote,
-  "noteTitle" | "noteValue" | "noteId" | "isArchived" | "isTrashed"
+  | "noteTitle"
+  | "noteValue"
+  | "noteId"
+  | "isArchived"
+  | "isTrashed"
+  | "noteBackgroundColor"
 >) {
   const [isHover, setIsHover] = useState<boolean>(false);
-  const { archiveNote, unArchiveNote, trashNote, unTrashNote } =
+  const { archiveNote, unArchiveNote, trashNote, unTrashNote, deleteNote } =
     useNoteOptions();
   return (
     <div
-      className="flex flex-col justify-between relative w-60 min-h-[100px] border-solid border border-border-gray rounded-lg text-main-text-color"
+      className={`flex ${colorVariant[noteBackgroundColor]} flex-col justify-between relative w-60 min-h-[100px] border-solid border border-border-gray rounded-lg text-main-text-color`}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
@@ -73,7 +80,15 @@ function Note({
             archive={() => archiveNote(noteId)}
           />
         )}
-        {isTrashed && <NoteOptions Icon={DeleteForeverIcon} action="delete" />}
+        {isTrashed && (
+          <NoteOptions
+            Icon={DeleteForeverIcon}
+            action="deleteforever"
+            deleteForEver={() => {
+              deleteNote(noteId);
+            }}
+          />
+        )}
         {isTrashed && (
           <NoteOptions
             Icon={RestoreFromTrashIcon}
