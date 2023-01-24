@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import BackgroundColorOption from "./BackgroundColorOption";
 import InvertColorsOffIcon from "@mui/icons-material/InvertColorsOff";
-import { TUseNote } from "../../types/types";
+import { TPropsBackgroundColorsContainer, TUseNote } from "../../types/types";
 const BACKGROUND_COLORS = [
   "#5c2b29",
   "#614a19",
@@ -17,31 +17,47 @@ const BACKGROUND_COLORS = [
 ];
 const BackgroundColorsContainer = forwardRef<
   HTMLDivElement,
-  Pick<TUseNote, "note" | "setNote">
->(({ note, setNote }, ref) => {
-  return (
-    <div
-      className="absolute shadow-bccs p-2 rounded-md bg-main-background-color top-[calc(100%-16px)] left-12 flex items-center justify-center gap-2"
-      ref={ref}
-    >
-      <BackgroundColorOption
-        color="default"
-        Icon={InvertColorsOffIcon}
-        note={note}
-        setNote={setNote}
-      />
-      {BACKGROUND_COLORS.map((color) => {
-        return (
-          <BackgroundColorOption
-            color={color}
-            key={color}
-            note={note}
-            setNote={setNote}
-          />
-        );
-      })}
-    </div>
-  );
-});
+  TPropsBackgroundColorsContainer
+>(
+  (
+    {
+      noteCurrentColor,
+      setNote = null,
+      changeNoteBackground = null,
+      fromWho = null,
+    },
+    ref
+  ) => {
+    return (
+      <div
+        className="absolute shadow-bccs p-2 rounded-md bg-main-background-color top-[calc(100%-16px)] left-12 flex items-center justify-center gap-2 z-50"
+        ref={ref}
+      >
+        <BackgroundColorOption
+          color="default"
+          Icon={InvertColorsOffIcon}
+          noteCurrentColor={noteCurrentColor}
+          setNote={fromWho === "takeNote" ? setNote : null}
+          changeNoteBackground={
+            fromWho === "note" ? changeNoteBackground : null
+          }
+        />
+        {BACKGROUND_COLORS.map((color) => {
+          return (
+            <BackgroundColorOption
+              color={color}
+              key={color}
+              noteCurrentColor={noteCurrentColor}
+              setNote={fromWho === "takeNote" ? setNote : null}
+              changeNoteBackground={
+                fromWho === "note" ? changeNoteBackground : null
+              }
+            />
+          );
+        })}
+      </div>
+    );
+  }
+);
 
 export default BackgroundColorsContainer;

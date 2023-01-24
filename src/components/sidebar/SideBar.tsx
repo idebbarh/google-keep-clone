@@ -32,13 +32,13 @@ function SideBar(): JSX.Element {
         page="home"
         isLink={true}
       />
-      <SideBarOptions
-        Icon={NotificationsIcon}
-        title="reminders"
-        page="reminders"
-        isLink={true}
-      />
-      <SideBarOptions Icon={EditIcon} title="edit labels" isLink={false} />
+      {/* <SideBarOptions */}
+      {/*   Icon={NotificationsIcon} */}
+      {/*   title="reminders" */}
+      {/*   page="reminders" */}
+      {/*   isLink={true} */}
+      {/* /> */}
+      {/* <SideBarOptions Icon={EditIcon} title="edit labels" isLink={false} /> */}
       <SideBarOptions
         Icon={ArchiveIcon}
         title="archive"

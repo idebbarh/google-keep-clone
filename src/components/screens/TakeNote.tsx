@@ -57,16 +57,16 @@ function TakeNote({
   useEffect(() => {
     const noteRef = takeNoteRef.current;
     if (noteRef) {
-      document.addEventListener("click", handleClick);
+      document.addEventListener("click", handleClickToEveryDomElem);
     }
     return () => {
       if (noteRef) {
-        document.removeEventListener("click", handleClick);
+        document.removeEventListener("click", handleClickToEveryDomElem);
       }
     };
   }, []);
 
-  const handleClick = (e: MouseEvent): void => {
+  const handleClickToEveryDomElem = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
     if (
       !takeNoteRef.current?.isSameNode(target) &&
@@ -149,8 +149,8 @@ function TakeNote({
       />
       {isFocus && (
         <div className="flex items-center gap-4 px-4 pb-3">
-          <TakeNoteOptions Icon={AddAlertIcon} />
-          <TakeNoteOptions Icon={PersonAddAlt1Icon} />
+          {/* <TakeNoteOptions Icon={AddAlertIcon} /> */}
+          {/* <TakeNoteOptions Icon={PersonAddAlt1Icon} /> */}
           <TakeNoteOptions
             action="backgroundcolor"
             Icon={ColorLensIcon}
@@ -159,9 +159,9 @@ function TakeNote({
             }
             ref={openBackgroundColorsContainerIconRef}
           />
-          <TakeNoteOptions Icon={ImageIcon} />
-          <TakeNoteOptions Icon={ArchiveIcon} />
-          <TakeNoteOptions Icon={MoreVertIcon} />
+          {/* <TakeNoteOptions Icon={ImageIcon} /> */}
+          {/* <TakeNoteOptions Icon={ArchiveIcon} /> */}
+          {/* <TakeNoteOptions Icon={MoreVertIcon} /> */}
           <TakeNoteOptions
             Icon={UndoIcon}
             action="undo"
@@ -187,8 +187,9 @@ function TakeNote({
       {isBackgroundColorContainerOpen && (
         <BackgroundColorsContainer
           ref={backgroundColorsContainerRef}
-          note={note}
+          noteCurrentColor={note.noteBackgroundColor}
           setNote={setNote}
+          fromWho="takeNote"
         />
       )}
     </div>

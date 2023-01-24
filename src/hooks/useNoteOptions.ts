@@ -23,5 +23,19 @@ export default function useNoteOptions(): TNoteUseOptions {
     const docRef = doc(db, "notes", id);
     await deleteDoc(docRef);
   };
-  return { archiveNote, unArchiveNote, trashNote, unTrashNote, deleteNote };
+  const changeNoteBackground = async (
+    id: string,
+    newColor: string
+  ): Promise<void> => {
+    const docRef = doc(db, "notes", id);
+    await updateDoc(docRef, { noteBackgroundColor: newColor });
+  };
+  return {
+    archiveNote,
+    unArchiveNote,
+    trashNote,
+    unTrashNote,
+    deleteNote,
+    changeNoteBackground,
+  };
 }

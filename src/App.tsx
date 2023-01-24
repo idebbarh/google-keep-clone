@@ -20,7 +20,7 @@ function App(): JSX.Element {
                 element={<Navigate to="/home" replace={true} />}
               />
               <Route path="/home" element={<HomeScreen />} />
-              <Route path="/reminders" element={<h1>reminders</h1>} />
+              {/* <Route path="/reminders" element={<h1>reminders</h1>} /> */}
               <Route path="/archive" element={<ArchiveScreen />} />
               <Route path="/trash" element={<TrashScreen />} />
               <Route path="/search" element={<h1>search</h1>} />

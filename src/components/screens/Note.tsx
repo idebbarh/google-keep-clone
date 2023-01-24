@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -13,6 +13,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { TNote } from "../../types/types";
 import useNoteOptions from "../../hooks/useNoteOptions";
 import { colorVariant } from "../../utils/colorVariant";
+import BackgroundColorsContainer from "./BackgroundColorsContainer";
 function Note({
   noteTitle,
   noteValue,
@@ -30,8 +31,45 @@ function Note({
   | "noteBackgroundColor"
 >) {
   const [isHover, setIsHover] = useState<boolean>(false);
-  const { archiveNote, unArchiveNote, trashNote, unTrashNote, deleteNote } =
-    useNoteOptions();
+  const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
+    useState<boolean>(false);
+  const {
+    archiveNote,
+    unArchiveNote,
+    trashNote,
+    unTrashNote,
+    deleteNote,
+    changeNoteBackground,
+  } = useNoteOptions();
+
+  const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
+  const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const bgcRef = backgroundColorsContainerRef.current;
+    const iconRef = openBackgroundColorsContainerIconRef.current;
+    if (bgcRef && iconRef) {
+      document.addEventListener("click", handleClickToEveryDomElem);
+    }
+    return () => {
+      if (bgcRef && iconRef) {
+        document.removeEventListener("click", handleClickToEveryDomElem);
+      }
+    };
+  }, [isBackgroundColorContainerOpen]);
+
+  const handleClickToEveryDomElem = (e: MouseEvent): void => {
+    const target = e.target as HTMLElement;
+    if (
+      !backgroundColorsContainerRef.current?.isSameNode(target) &&
+      !backgroundColorsContainerRef.current?.contains(target) &&
+      !openBackgroundColorsContainerIconRef.current?.isSameNode(target) &&
+      !openBackgroundColorsContainerIconRef.current?.contains(target)
+    ) {
+      setIsBackgroundColorContainerOpen(false);
+    }
+  };
+
   return (
     <div
       className={`flex ${colorVariant[noteBackgroundColor]} flex-col justify-between relative w-60 min-h-[100px] border-solid border border-border-gray rounded-lg text-main-text-color`}
@@ -62,10 +100,19 @@ function Note({
           isHover ? "opacity-100" : "opacity-0"
         } transition-opacity duration-300 ease-in-out`}
       >
-        {!isTrashed && <NoteOptions Icon={AddAlertIcon} />}
-        {!isTrashed && <NoteOptions Icon={PersonAddAlt1Icon} />}
-        {!isTrashed && <NoteOptions Icon={ColorLensIcon} />}
-        {!isTrashed && <NoteOptions Icon={ImageIcon} />}
+        {/* {!isTrashed && <NoteOptions Icon={AddAlertIcon} />} */}
+        {/* {!isTrashed && <NoteOptions Icon={PersonAddAlt1Icon} />} */}
+        {!isTrashed && (
+          <NoteOptions
+            Icon={ColorLensIcon}
+            action="backgroundcolor"
+            setIsBackgroundColorContainerOpen={() =>
+              setIsBackgroundColorContainerOpen((prevState) => !prevState)
+            }
+            ref={openBackgroundColorsContainerIconRef}
+          />
+        )}
+        {/* {!isTrashed && <NoteOptions Icon={ImageIcon} />} */}
         {isArchived && !isTrashed && (
           <NoteOptions
             Icon={UnarchiveIcon}
@@ -108,6 +155,16 @@ function Note({
           />
         )}
       </div>
+      {isBackgroundColorContainerOpen && (
+        <BackgroundColorsContainer
+          ref={backgroundColorsContainerRef}
+          noteCurrentColor={noteBackgroundColor}
+          changeNoteBackground={(newColor: string) =>
+            changeNoteBackground(noteId, newColor)
+          }
+          fromWho="note"
+        />
+      )}
     </div>
   );
 }

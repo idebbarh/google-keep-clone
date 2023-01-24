@@ -9,6 +9,7 @@ export interface TNoteUseOptions {
   trashNote: (id: string) => Promise<void>;
   unTrashNote: (id: string) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
+  changeNoteBackground: (id: string, newColor: string) => Promise<void>;
 }
 export interface TNote {
   noteTitle: string;
@@ -69,9 +70,26 @@ export interface TPropsNoteOptions {
   trash?: (() => void) | null;
   unTrash?: (() => void) | null;
   deleteForEver?: (() => void) | null;
+  setIsBackgroundColorContainerOpen?: (() => void) | null;
 }
-export interface TPropsBackgroundColorOption
-  extends Pick<TUseNote, "note" | "setNote"> {
+export interface TPropsBackgroundColorOption {
+  noteCurrentColor: string;
+  setNote?: Dispatch<
+    SetStateAction<
+      Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">
+    >
+  > | null;
   Icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> | null;
   color: string;
+  changeNoteBackground?: ((newColor: string) => void) | null;
+}
+export interface TPropsBackgroundColorsContainer {
+  fromWho: string;
+  noteCurrentColor: string;
+  setNote?: Dispatch<
+    SetStateAction<
+      Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">
+    >
+  > | null;
+  changeNoteBackground?: ((newColor: string) => void) | null;
 }
