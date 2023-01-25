@@ -1,10 +1,14 @@
 import { TNoteUseOptions } from "../types/types";
 import { db } from "../firebase/firebase";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 export default function useNoteOptions(): TNoteUseOptions {
   const archiveNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);
     await updateDoc(docRef, { isArchived: true });
+    const curNoteInfo = await getNoteById(id);
+    if (curNoteInfo?.isPinned) {
+      await pinAndUnpinNote(id, curNoteInfo?.isPinned);
+    }
   };
   const unArchiveNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);
@@ -13,6 +17,10 @@ export default function useNoteOptions(): TNoteUseOptions {
   const trashNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);
     await updateDoc(docRef, { isTrashed: true });
+    const curNoteInfo = await getNoteById(id);
+    if (curNoteInfo?.isPinned) {
+      await pinAndUnpinNote(id, curNoteInfo?.isPinned);
+    }
   };
   const unTrashNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);
@@ -30,6 +38,22 @@ export default function useNoteOptions(): TNoteUseOptions {
     const docRef = doc(db, "notes", id);
     await updateDoc(docRef, { noteBackgroundColor: newColor });
   };
+  const pinAndUnpinNote = async (
+    id: string,
+    isPinned: boolean
+  ): Promise<void> => {
+    const docRef = doc(db, "notes", id);
+    await updateDoc(docRef, { isPinned: !isPinned });
+    const curNoteInfo = await getNoteById(id);
+    if (curNoteInfo?.isArchived && curNoteInfo?.isPinned) {
+      await unArchiveNote(id);
+    }
+  };
+  const getNoteById = async (id: string) => {
+    const docRef = doc(db, "notes", id);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data();
+  };
   return {
     archiveNote,
     unArchiveNote,
@@ -37,5 +61,6 @@ export default function useNoteOptions(): TNoteUseOptions {
     unTrashNote,
     deleteNote,
     changeNoteBackground,
+    pinAndUnpinNote,
   };
 }

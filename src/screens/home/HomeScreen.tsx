@@ -5,13 +5,16 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TakeNote from "../../components/screens/TakeNote";
 import Note from "../../components/screens/Note";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
 function HomeScreen() {
   const { note, setNote, notes, setNotes, clearNote } = useNote();
+  const [numberOfPinnedNotes, setNumberOfPinnedNotes] = useState<number>(
+    notes.filter((note) => note.isPinned).length
+  );
   useEffect(() => {
     const q = query(
       collection(db, "notes"),
@@ -30,12 +33,16 @@ function HomeScreen() {
             isTrashed: doc.data().isTrashed,
             noteId: doc.id,
             noteBackgroundColor: doc.data().noteBackgroundColor,
+            isPinned: doc.data().isPinned,
           };
         })
       );
     });
     return usub;
   }, []);
+  useEffect(() => {
+    setNumberOfPinnedNotes(notes.filter((note) => note.isPinned).length);
+  }, [notes]);
   return (
     <div>
       <TakeNote
@@ -44,20 +51,62 @@ function HomeScreen() {
         clearNote={clearNote}
         notes={notes}
       />
-      <div className="flex items-start gap-4 flex-wrap py-4 px-10">
-        {notes.map((note) => {
-          return (
-            <Note
-              noteTitle={note.noteTitle}
-              noteValue={note.noteValue}
-              noteId={note.noteId}
-              isArchived={note.isArchived}
-              isTrashed={note.isTrashed}
-              noteBackgroundColor={note.noteBackgroundColor}
-              key={note.noteId}
-            />
-          );
-        })}
+      <div className="py-4 px-10 flex flex-col gap-y-20">
+        {numberOfPinnedNotes > 0 && (
+          <div>
+            {numberOfPinnedNotes > 0 && (
+              <h3 className="text-[#9aa0a6] pl-4 pb-2 uppercase font-normal text-xs">
+                pinned
+              </h3>
+            )}
+            <div className="flex items-start gap-4 flex-wrap">
+              {notes
+                .filter((note) => note.isPinned)
+                .map((note) => {
+                  return (
+                    <Note
+                      noteTitle={note.noteTitle}
+                      noteValue={note.noteValue}
+                      noteId={note.noteId}
+                      isArchived={note.isArchived}
+                      isTrashed={note.isTrashed}
+                      noteBackgroundColor={note.noteBackgroundColor}
+                      isPinned={note.isPinned}
+                      key={note.noteId}
+                    />
+                  );
+                })}
+            </div>
+          </div>
+        )}
+
+        {numberOfPinnedNotes !== notes.length && (
+          <div>
+            {numberOfPinnedNotes > 0 && (
+              <h3 className="text-[#9aa0a6] pl-4 pb-2 uppercase font-normal text-xs">
+                other
+              </h3>
+            )}
+            <div className="flex items-start gap-4 flex-wrap">
+              {notes
+                .filter((note) => !note.isPinned)
+                .map((note) => {
+                  return (
+                    <Note
+                      noteTitle={note.noteTitle}
+                      noteValue={note.noteValue}
+                      noteId={note.noteId}
+                      isArchived={note.isArchived}
+                      isTrashed={note.isTrashed}
+                      noteBackgroundColor={note.noteBackgroundColor}
+                      isPinned={note.isPinned}
+                      key={note.noteId}
+                    />
+                  );
+                })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

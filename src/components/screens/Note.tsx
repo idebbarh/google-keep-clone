@@ -14,6 +14,9 @@ import { TNote } from "../../types/types";
 import useNoteOptions from "../../hooks/useNoteOptions";
 import { colorVariant } from "../../utils/colorVariant";
 import BackgroundColorsContainer from "./BackgroundColorsContainer";
+import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
+import PushPinIcon from "@mui/icons-material/PushPin";
+
 function Note({
   noteTitle,
   noteValue,
@@ -21,6 +24,7 @@ function Note({
   isTrashed,
   noteId,
   noteBackgroundColor,
+  isPinned,
 }: Pick<
   TNote,
   | "noteTitle"
@@ -29,6 +33,7 @@ function Note({
   | "isArchived"
   | "isTrashed"
   | "noteBackgroundColor"
+  | "isPinned"
 >) {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
@@ -40,6 +45,7 @@ function Note({
     unTrashNote,
     deleteNote,
     changeNoteBackground,
+    pinAndUnpinNote,
   } = useNoteOptions();
 
   const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
@@ -120,6 +126,7 @@ function Note({
             unArchive={() => unArchiveNote(noteId)}
           />
         )}
+
         {!isArchived && !isTrashed && (
           <NoteOptions
             Icon={ArchiveIcon}
@@ -152,6 +159,13 @@ function Note({
             trash={() => {
               trashNote(noteId);
             }}
+          />
+        )}
+        {!isTrashed && (
+          <NoteOptions
+            Icon={isPinned ? PushPinIcon : PushPinOutlinedIcon}
+            action="pin"
+            pinAndUnPin={() => pinAndUnpinNote(noteId, isPinned)}
           />
         )}
       </div>

@@ -100,6 +100,7 @@ function TakeNote({
         createdAt: serverTimestamp(),
         isArchived: false,
         isTrashed: false,
+        isPinned: false,
       });
     } catch (err) {
       alert(err);

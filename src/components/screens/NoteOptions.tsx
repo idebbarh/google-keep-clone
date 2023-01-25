@@ -12,6 +12,7 @@ const NoteOptions = forwardRef<HTMLDivElement, TPropsNoteOptions>(
       unTrash = null,
       deleteForEver = null,
       setIsBackgroundColorContainerOpen = null,
+      pinAndUnPin = null,
     },
     ref
   ) => {
@@ -39,6 +40,10 @@ const NoteOptions = forwardRef<HTMLDivElement, TPropsNoteOptions>(
       }
       if (action === "backgroundcolor" && setIsBackgroundColorContainerOpen) {
         setIsBackgroundColorContainerOpen();
+        return;
+      }
+      if (action === "pin" && pinAndUnPin) {
+        pinAndUnPin();
         return;
       }
     };

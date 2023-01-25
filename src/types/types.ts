@@ -10,6 +10,7 @@ export interface TNoteUseOptions {
   unTrashNote: (id: string) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
   changeNoteBackground: (id: string, newColor: string) => Promise<void>;
+  pinAndUnpinNote: (id: string, isPinned: boolean) => Promise<void>;
 }
 export interface TNote {
   noteTitle: string;
@@ -19,6 +20,7 @@ export interface TNote {
   noteId: string;
   isArchived: boolean;
   isTrashed: boolean;
+  isPinned: boolean;
 }
 export interface TUseNote {
   note: Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">;
@@ -70,6 +72,7 @@ export interface TPropsNoteOptions {
   trash?: (() => void) | null;
   unTrash?: (() => void) | null;
   deleteForEver?: (() => void) | null;
+  pinAndUnPin?: (() => void) | null;
   setIsBackgroundColorContainerOpen?: (() => void) | null;
 }
 export interface TPropsBackgroundColorOption {

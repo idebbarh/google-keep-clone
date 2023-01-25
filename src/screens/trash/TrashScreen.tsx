@@ -29,6 +29,7 @@ function TrashScreen() {
             isTrashed: doc.data().isTrashed,
             noteId: doc.id,
             noteBackgroundColor: doc.data().noteBackgroundColor,
+            isPinned: doc.data().isPinned,
           };
         })
       );
@@ -47,6 +48,7 @@ function TrashScreen() {
             isTrashed={note.isTrashed}
             key={note.noteId}
             noteBackgroundColor={note.noteBackgroundColor}
+            isPinned={note.isPinned}
           />
         );
       })}
