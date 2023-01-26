@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckIcon from "@mui/icons-material/Check";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
@@ -16,6 +16,12 @@ import { colorVariant } from "../../utils/colorVariant";
 import BackgroundColorsContainer from "./BackgroundColorsContainer";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  selectNote,
+  selectSelectedNotes,
+  unSelectNote,
+} from "../../features/selectedNotesSlice";
 
 function Note({
   noteTitle,
@@ -50,6 +56,8 @@ function Note({
 
   const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
   const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+  const selectedNotes = useAppSelector(selectSelectedNotes);
 
   useEffect(() => {
     const bgcRef = backgroundColorsContainerRef.current;
@@ -76,18 +84,39 @@ function Note({
     }
   };
 
+  const isNoteSelected = (): boolean => {
+    return selectedNotes.selectedNotes.includes(noteId);
+  };
+  const selectAndUnselectNoteHandler = (): void => {
+    if (isNoteSelected()) {
+      dispatch(unSelectNote({ noteId: noteId }));
+    } else {
+      dispatch(selectNote({ noteId: noteId }));
+    }
+  };
   return (
     <div
-      className={`flex ${colorVariant[noteBackgroundColor]} flex-col justify-between relative w-60 min-h-[100px] border-solid border border-border-gray rounded-lg text-main-text-color`}
+      className={`flex ${
+        colorVariant[noteBackgroundColor]
+      } flex-col justify-between relative w-60 min-h-[100px] border-solid border ${
+        isNoteSelected() ? "border-transparent" : "border-border-gray"
+      }
+       rounded-lg text-main-text-color transition-all duration-300 ease-in-out`}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
       <div
+        className={`absolute w-[calc(100%+6px)] h-[calc(100%+6px)] border-[3px] border-slid border-white left-[-3px] top-[-3px] rounded-lg transition-all duration-300 ease-in-out ${
+          isNoteSelected() ? "opacity-100" : "opacity-0"
+        } z-[-1]`}
+      ></div>
+      <div
         className={`absolute -left-2.5 -top-2.5 cursor-pointer ${
-          isHover ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-300 ease-in-out`}
+          isHover || isNoteSelected() ? "opacity-100" : "opacity-0"
+        } transition-opacity duration-300 ease-in-out z-50 flex justify-center items-center bg-white w-20px h-20px rounded-full text-main-background-color`}
+        onClick={selectAndUnselectNoteHandler}
       >
-        <CheckCircleIcon />
+        <CheckIcon color="inherit" />
       </div>
       <div className="p-4 text-lg flex flex-col gap-0.5">
         {noteTitle.length > 0 && (
@@ -103,7 +132,9 @@ function Note({
       </div>
       <div
         className={`flex items-center px-2 pb-1 ${
-          isHover ? "opacity-100" : "opacity-0"
+          isHover && selectedNotes.selectedNotes.length === 0
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         } transition-opacity duration-300 ease-in-out`}
       >
         {/* {!isTrashed && <NoteOptions Icon={AddAlertIcon} />} */}

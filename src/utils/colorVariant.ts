@@ -2,7 +2,7 @@ interface TColorVaiant {
   [key: string]: string;
 }
 export const colorVariant: TColorVaiant = {
-  default: "bg-trasparent",
+  default: "bg-main-background-color",
   "#5c2b29": "bg-[#5c2b29]",
   "#614a19": "bg-[#614a19]",
   "#635d19": "bg-[#635d19]",

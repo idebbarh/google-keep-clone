@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import { MenuStateState } from "../types/types";
+import { TMenuStateState } from "../types/types";
 
-const initialState: MenuStateState = {
+const initialState: TMenuStateState = {
   value: {
     originState: true,
     tempState: false,

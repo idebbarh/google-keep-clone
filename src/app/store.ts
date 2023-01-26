@@ -1,9 +1,11 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import menuStateReducer from "../features/menuStateSlice";
+import selectedNotesReducer from "../features/selectedNotesSlice";
 
 export const store = configureStore({
   reducer: {
     menuState: menuStateReducer,
+    selectedNotes: selectedNotesReducer,
   },
 });
 

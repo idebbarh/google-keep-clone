@@ -6,10 +6,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomeScreen from "./screens/home/HomeScreen";
 import TrashScreen from "./screens/trash/TrashScreen";
 import ArchiveScreen from "./screens/archive/ArchiveScreen";
+import SelectedNotesOptionsContainer from "./components/screens/SelectedNotesOptionsContainer";
 function App(): JSX.Element {
   return (
     <div className="app">
       <BrowserRouter>
+        <SelectedNotesOptionsContainer />
         <Header />
         <div className="flex">
           <SideBar />

@@ -33,10 +33,15 @@ export interface TUseNote {
   setNotes: Dispatch<SetStateAction<TNote[]>>;
   clearNote: () => void;
 }
-export interface MenuStateState {
+export interface TMenuStateState {
   value: {
     originState: boolean;
     tempState: boolean;
+  };
+}
+export interface TSelectedNotes {
+  value: {
+    selectedNotes: string[];
   };
 }
 
