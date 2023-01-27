@@ -50,7 +50,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Author
 
-- **ISMAIL DEBBARH** - [YOUR GITHUB PROFILE](https://github.com/YOUR-USERNAME)
+- **ISMAIL DEBBARH**
 
 ## Acknowledgments
 
