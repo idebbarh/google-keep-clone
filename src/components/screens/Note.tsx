@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import CheckIcon from "@mui/icons-material/Check";
-import AddAlertIcon from "@mui/icons-material/AddAlert";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
-import ImageIcon from "@mui/icons-material/Image";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import NoteOptions from "./NoteOptions";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
@@ -17,6 +14,7 @@ import BackgroundColorsContainer from "./BackgroundColorsContainer";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+
 import {
   selectNote,
   selectSelectedNotes,
@@ -196,7 +194,7 @@ function Note({
           <NoteOptions
             Icon={isPinned ? PushPinIcon : PushPinOutlinedIcon}
             action="pin"
-            pinAndUnPin={() => pinAndUnpinNote(noteId, isPinned)}
+            pinAndUnPin={() => pinAndUnpinNote(noteId)}
           />
         )}
       </div>

@@ -23,10 +23,14 @@ export const selectedNotesSlice = createSlice({
         (id) => id !== action.payload.noteId
       );
     },
+    unSelectAllNotes: (state) => {
+      state.value.selectedNotes = initialState.value.selectedNotes;
+    },
   },
 });
 
-export const { selectNote, unSelectNote } = selectedNotesSlice.actions;
+export const { selectNote, unSelectNote, unSelectAllNotes } =
+  selectedNotesSlice.actions;
 
 export const selectSelectedNotes = (state: RootState) =>
   state.selectedNotes.value;

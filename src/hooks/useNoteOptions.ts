@@ -7,7 +7,7 @@ export default function useNoteOptions(): TNoteUseOptions {
     await updateDoc(docRef, { isArchived: true });
     const curNoteInfo = await getNoteById(id);
     if (curNoteInfo?.isPinned) {
-      await pinAndUnpinNote(id, curNoteInfo?.isPinned);
+      await pinAndUnpinNote(id);
     }
   };
   const unArchiveNote = async (id: string): Promise<void> => {
@@ -19,7 +19,7 @@ export default function useNoteOptions(): TNoteUseOptions {
     await updateDoc(docRef, { isTrashed: true });
     const curNoteInfo = await getNoteById(id);
     if (curNoteInfo?.isPinned) {
-      await pinAndUnpinNote(id, curNoteInfo?.isPinned);
+      await pinAndUnpinNote(id);
     }
   };
   const unTrashNote = async (id: string): Promise<void> => {
@@ -38,13 +38,11 @@ export default function useNoteOptions(): TNoteUseOptions {
     const docRef = doc(db, "notes", id);
     await updateDoc(docRef, { noteBackgroundColor: newColor });
   };
-  const pinAndUnpinNote = async (
-    id: string,
-    isPinned: boolean
-  ): Promise<void> => {
+  const pinAndUnpinNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);
-    await updateDoc(docRef, { isPinned: !isPinned });
-    const curNoteInfo = await getNoteById(id);
+    let curNoteInfo = await getNoteById(id);
+    await updateDoc(docRef, { isPinned: !curNoteInfo?.isPinned });
+    curNoteInfo = await getNoteById(id);
     if (curNoteInfo?.isArchived && curNoteInfo?.isPinned) {
       await unArchiveNote(id);
     }

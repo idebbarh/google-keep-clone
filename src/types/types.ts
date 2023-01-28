@@ -10,7 +10,7 @@ export interface TNoteUseOptions {
   unTrashNote: (id: string) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
   changeNoteBackground: (id: string, newColor: string) => Promise<void>;
-  pinAndUnpinNote: (id: string, isPinned: boolean) => Promise<void>;
+  pinAndUnpinNote: (id: string) => Promise<void>;
 }
 export interface TNote {
   noteTitle: string;
@@ -100,4 +100,14 @@ export interface TPropsBackgroundColorsContainer {
     >
   > | null;
   changeNoteBackground?: ((newColor: string) => void) | null;
+}
+export interface TPropsSelectedNotesOptions {
+  Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+  action: string;
+}
+export interface TPropsSideBarOptions {
+  Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+  title: string;
+  page?: string;
+  isLink: true | false;
 }
