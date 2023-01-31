@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import BackgroundColorOption from "./BackgroundColorOption";
 import InvertColorsOffIcon from "@mui/icons-material/InvertColorsOff";
-import { TPropsBackgroundColorsContainer, TUseNote } from "../../types/types";
+import { TPropsBackgroundColorsContainer } from "../../types/types";
 const BACKGROUND_COLORS = [
   "#5c2b29",
   "#614a19",
@@ -21,10 +21,10 @@ const BackgroundColorsContainer = forwardRef<
 >(
   (
     {
-      noteCurrentColor,
+      noteCurrentColor = null,
       setNote = null,
       changeNoteBackground = null,
-      fromWho = null,
+      closeBackgroundColorContainer = null,
     },
     ref
   ) => {
@@ -37,10 +37,9 @@ const BackgroundColorsContainer = forwardRef<
           color="default"
           Icon={InvertColorsOffIcon}
           noteCurrentColor={noteCurrentColor}
-          setNote={fromWho === "takeNote" ? setNote : null}
-          changeNoteBackground={
-            fromWho === "note" ? changeNoteBackground : null
-          }
+          setNote={setNote}
+          changeNoteBackground={changeNoteBackground}
+          closeBackgroundColorContainer={closeBackgroundColorContainer}
         />
         {BACKGROUND_COLORS.map((color) => {
           return (
@@ -48,10 +47,9 @@ const BackgroundColorsContainer = forwardRef<
               color={color}
               key={color}
               noteCurrentColor={noteCurrentColor}
-              setNote={fromWho === "takeNote" ? setNote : null}
-              changeNoteBackground={
-                fromWho === "note" ? changeNoteBackground : null
-              }
+              setNote={setNote}
+              changeNoteBackground={changeNoteBackground}
+              closeBackgroundColorContainer={closeBackgroundColorContainer}
             />
           );
         })}

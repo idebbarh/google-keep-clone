@@ -6,12 +6,15 @@ import {
   where,
 } from "firebase/firestore";
 import React, { useEffect } from "react";
+import { useAppSelector } from "../../app/hooks";
 import Note from "../../components/screens/Note";
+import { selecteGridView } from "../../features/gridViewSlice";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
 
 function ArchiveScreen() {
   const { notes, setNotes } = useNote();
+  const currentGridView = useAppSelector(selecteGridView);
   useEffect(() => {
     const q = query(
       collection(db, "notes"),
@@ -38,7 +41,11 @@ function ArchiveScreen() {
     return usub;
   }, []);
   return (
-    <div className="flex items-start gap-4 flex-wrap py-4 px-10">
+    <div
+      className={`py-4 px-10 flex flex-col gap-y-20 ${
+        !currentGridView.isGrid ? "max-w-[680px] mx-auto" : ""
+      }`}
+    >
       {notes.map((note) => {
         return (
           <Note

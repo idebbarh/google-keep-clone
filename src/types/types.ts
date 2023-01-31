@@ -9,7 +9,10 @@ export interface TNoteUseOptions {
   trashNote: (id: string) => Promise<void>;
   unTrashNote: (id: string) => Promise<void>;
   deleteNote: (id: string) => Promise<void>;
-  changeNoteBackground: (id: string, newColor: string) => Promise<void>;
+  changeNoteBackground: (
+    id: string | string[],
+    newColor: string
+  ) => Promise<void>;
   pinAndUnpinNote: (id: string) => Promise<void>;
 }
 export interface TNote {
@@ -45,6 +48,11 @@ export interface TSelectedNotes {
   };
 }
 
+export interface TGridView {
+  value: {
+    isGrid: boolean;
+  };
+}
 export interface TPropsTakeNoteOptions {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   action?: string | null;
@@ -81,7 +89,7 @@ export interface TPropsNoteOptions {
   setIsBackgroundColorContainerOpen?: (() => void) | null;
 }
 export interface TPropsBackgroundColorOption {
-  noteCurrentColor: string;
+  noteCurrentColor?: string | null;
   setNote?: Dispatch<
     SetStateAction<
       Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">
@@ -90,20 +98,22 @@ export interface TPropsBackgroundColorOption {
   Icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> | null;
   color: string;
   changeNoteBackground?: ((newColor: string) => void) | null;
+  closeBackgroundColorContainer?: (() => void) | null;
 }
 export interface TPropsBackgroundColorsContainer {
-  fromWho: string;
-  noteCurrentColor: string;
+  noteCurrentColor?: string | null;
   setNote?: Dispatch<
     SetStateAction<
       Pick<TNote, "noteTitle" | "noteValue" | "noteBackgroundColor">
     >
   > | null;
   changeNoteBackground?: ((newColor: string) => void) | null;
+  closeBackgroundColorContainer?: (() => void) | null;
 }
 export interface TPropsSelectedNotesOptions {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   action: string;
+  setIsBackgroundColorContainerOpen?: (() => void) | null;
 }
 export interface TPropsSideBarOptions {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;

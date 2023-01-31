@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { TPropsSelectedNotesOptions } from "../../types/types";
 import { IconButton } from "@mui/material";
 import useNoteOptions from "../../hooks/useNoteOptions";
@@ -9,7 +9,10 @@ import {
 } from "../../features/selectedNotesSlice";
 import { useAppDispatch } from "../../app/hooks";
 
-function SelectedNotesOptions({ Icon, action }: TPropsSelectedNotesOptions) {
+const SelectedNotesOptions = forwardRef<
+  HTMLDivElement,
+  TPropsSelectedNotesOptions
+>(({ Icon, action, setIsBackgroundColorContainerOpen = null }, ref) => {
   const {
     archiveNote,
     trashNote,
@@ -41,19 +44,29 @@ function SelectedNotesOptions({ Icon, action }: TPropsSelectedNotesOptions) {
           unArchiveNote(noteId);
         } else if (action === "untrash") {
           unTrashNote(noteId);
-        } else {
+        } else if (action === "deleteforever") {
           deleteNote(noteId);
         }
       }
-      dispatch(unSelectAllNotes());
+      if (action !== "backgroundcolor") {
+        dispatch(unSelectAllNotes());
+      }
     }
   };
   return (
-    <div className="text-[#8ab4f8]" onClick={handleClick}>
+    <div
+      className="text-[#8ab4f8]"
+      onClick={
+        action === "backgroundcolor" && setIsBackgroundColorContainerOpen
+          ? () => setIsBackgroundColorContainerOpen()
+          : handleClick
+      }
+      ref={ref}
+    >
       <IconButton color="inherit" size="large">
         <Icon />
       </IconButton>
     </div>
   );
-}
+});
 export default SelectedNotesOptions;

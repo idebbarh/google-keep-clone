@@ -32,11 +32,18 @@ export default function useNoteOptions(): TNoteUseOptions {
     await deleteDoc(docRef);
   };
   const changeNoteBackground = async (
-    id: string,
+    id: string | string[],
     newColor: string
   ): Promise<void> => {
-    const docRef = doc(db, "notes", id);
-    await updateDoc(docRef, { noteBackgroundColor: newColor });
+    if (!Array.isArray(id)) {
+      const docRef = doc(db, "notes", id);
+      await updateDoc(docRef, { noteBackgroundColor: newColor });
+    } else {
+      id.forEach(async (noteId: string) => {
+        const docRef = doc(db, "notes", noteId);
+        await updateDoc(docRef, { noteBackgroundColor: newColor });
+      });
+    }
   };
   const pinAndUnpinNote = async (id: string): Promise<void> => {
     const docRef = doc(db, "notes", id);

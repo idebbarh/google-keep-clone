@@ -1,14 +1,28 @@
 import { IconButton } from "@mui/material";
 import React from "react";
 
-type Props = {
+interface TPropsHeaderRightSideOptions {
   Icon: any;
   type: string;
-};
+  toggleGridView?: (() => void) | null;
+}
 
-function HeaderRightSideOptions({ Icon, type }: Props): JSX.Element {
+function HeaderRightSideOptions({
+  Icon,
+  type,
+  toggleGridView = null,
+}: TPropsHeaderRightSideOptions): JSX.Element {
   const clickHandler = (): void => {
-    console.log(type);
+    switch (type) {
+      case "changeView":
+        toggleGridView && toggleGridView();
+        break;
+      case "account":
+        console.log("account");
+        break;
+      default:
+        console.log("default");
+    }
   };
   return (
     <div onClick={clickHandler}>

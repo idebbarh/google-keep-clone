@@ -2,18 +2,26 @@ import React from "react";
 import { TPropsBackgroundColorOption } from "../../types/types";
 import { colorVariant } from "../../utils/colorVariant";
 import CheckIcon from "@mui/icons-material/Check";
+import { useAppDispatch } from "../../app/hooks";
+import { unSelectAllNotes } from "../../features/selectedNotesSlice";
 function BackgroundColorOption({
   Icon = null,
   color,
   noteCurrentColor,
   setNote,
   changeNoteBackground,
+  closeBackgroundColorContainer,
 }: TPropsBackgroundColorOption): JSX.Element {
+  const dispatch = useAppDispatch();
   const handleClick = (): void => {
     if (setNote) {
       setNote((prevSate) => ({ ...prevSate, noteBackgroundColor: color }));
     } else if (changeNoteBackground) {
       changeNoteBackground(color);
+      if (closeBackgroundColorContainer) {
+        dispatch(unSelectAllNotes());
+        closeBackgroundColorContainer();
+      }
     }
   };
   return (
@@ -21,18 +29,20 @@ function BackgroundColorOption({
       className={`${
         colorVariant[color]
       } relative w-8 h-8 rounded-full border-2 border-solid text-lg text-main-text-color ${
-        noteCurrentColor === color
+        noteCurrentColor && noteCurrentColor === color
           ? "border-[#a142f4]"
           : color === "default"
           ? "border-[#5f6368]"
           : "border-transparent"
       } flex justify-center items-center cursor-pointer ${
-        noteCurrentColor === color ? "" : "hover:border-white"
+        noteCurrentColor && noteCurrentColor === color
+          ? ""
+          : "hover:border-white"
       }`}
       onClick={handleClick}
     >
       {color === "default" && Icon && <Icon fontSize="inherit" />}
-      {noteCurrentColor === color && (
+      {noteCurrentColor && noteCurrentColor === color && (
         <div className="h-4 w-4 rounded-full absolute bg-[#a142f4] left-1/2 top-[-6px] text-sm flex items-center justify-center text-main-text-color">
           <CheckIcon fontSize="inherit" />
         </div>

@@ -10,7 +10,10 @@ import TakeNote from "../../components/screens/TakeNote";
 import Note from "../../components/screens/Note";
 import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
+import { useAppSelector } from "../../app/hooks";
+import { selecteGridView } from "../../features/gridViewSlice";
 function HomeScreen() {
+  const currentGridView = useAppSelector(selecteGridView);
   const { note, setNote, notes, setNotes, clearNote } = useNote();
   const [numberOfPinnedNotes, setNumberOfPinnedNotes] = useState<number>(
     notes.filter((note) => note.isPinned).length
@@ -51,7 +54,11 @@ function HomeScreen() {
         clearNote={clearNote}
         notes={notes}
       />
-      <div className="py-4 px-10 flex flex-col gap-y-20">
+      <div
+        className={`py-4 px-10 flex flex-col gap-y-20 ${
+          !currentGridView.isGrid ? "max-w-[680px] mx-auto" : ""
+        }`}
+      >
         {numberOfPinnedNotes > 0 && (
           <div>
             {numberOfPinnedNotes > 0 && (
@@ -59,7 +66,11 @@ function HomeScreen() {
                 pinned
               </h3>
             )}
-            <div className="flex items-start gap-4 flex-wrap">
+            <div
+              className={`flex ${
+                !currentGridView.isGrid ? "flex-col" : ""
+              } items-start gap-4 flex-wrap`}
+            >
               {notes
                 .filter((note) => note.isPinned)
                 .map((note) => {
@@ -87,7 +98,11 @@ function HomeScreen() {
                 other
               </h3>
             )}
-            <div className="flex items-start gap-4 flex-wrap">
+            <div
+              className={`flex ${
+                !currentGridView.isGrid ? "flex-col" : ""
+              } items-start gap-4 flex-wrap`}
+            >
               {notes
                 .filter((note) => !note.isPinned)
                 .map((note) => {

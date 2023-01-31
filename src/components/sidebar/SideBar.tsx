@@ -16,9 +16,9 @@ function SideBar(): JSX.Element {
   const dispatch = useAppDispatch();
   return (
     <div
-      className={`h-[calc(100vh-65px)] w-fit flex flex-col justify-start pt-2 ${
+      className={`h-[calc(100vh-65px)] z-[999] bg-main-background-color w-fit flex flex-col justify-start pt-2 ${
         !menuState.originState && menuState.tempState ? "shadow-sbs" : ""
-      }`}
+      } md:absolute md:top-[65px] md:left-0`}
       onMouseEnter={
         menuState.originState ? undefined : () => dispatch(toggleTempState())
       }

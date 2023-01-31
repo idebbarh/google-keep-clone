@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectSelectedNotes } from "../../features/selectedNotesSlice";
+import {
+  selectSelectedNotes,
+  unSelectAllNotes,
+} from "../../features/selectedNotesSlice";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
 import SelectedNotesOptions from "./SelectedNotesOptions";
@@ -12,10 +15,19 @@ import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import ColorLensIcon from "@mui/icons-material/ColorLens";
 import { useLocation } from "react-router-dom";
+import BackgroundColorsContainer from "./BackgroundColorsContainer";
+import useNoteOptions from "../../hooks/useNoteOptions";
+import { useAppDispatch } from "../../app/hooks";
 
 function SelectedNotesOptionsContainer() {
+  const { changeNoteBackground } = useNoteOptions();
   const selectedNotes = useSelector(selectSelectedNotes);
   const { pathname } = useLocation();
+  const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
+    useState<boolean>(false);
+  const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
+  const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
   return (
     <div
       className={`fixed left-0 top-0 w-full min-h-[65px] z-50 flex justify-between items-center p-2 gap-9 border-b-border-gray border-solid border-b bg-main-background-color ${
@@ -25,7 +37,10 @@ function SelectedNotesOptionsContainer() {
       } transition-all duration-500 ease-in-out`}
     >
       <div className="flex items-center gap-2">
-        <div className="text-icons-color">
+        <div
+          className="text-icons-color"
+          onClick={() => dispatch(unSelectAllNotes())}
+        >
           <IconButton color="inherit" size="large">
             <CloseIcon />
           </IconButton>
@@ -39,7 +54,14 @@ function SelectedNotesOptionsContainer() {
       </div>
       <div className="flex items-start gap-2">
         {["/home", "/archive"].includes(pathname) && (
-          <SelectedNotesOptions Icon={ColorLensIcon} action="backgroundcolor" />
+          <SelectedNotesOptions
+            Icon={ColorLensIcon}
+            action="backgroundcolor"
+            setIsBackgroundColorContainerOpen={() =>
+              setIsBackgroundColorContainerOpen((prevState) => !prevState)
+            }
+            ref={openBackgroundColorsContainerIconRef}
+          />
         )}
 
         {["/home"].includes(pathname) && (
@@ -69,6 +91,18 @@ function SelectedNotesOptionsContainer() {
           <SelectedNotesOptions Icon={RestoreFromTrashIcon} action="untrash" />
         )}
       </div>
+
+      {isBackgroundColorContainerOpen && (
+        <BackgroundColorsContainer
+          ref={backgroundColorsContainerRef}
+          changeNoteBackground={(newColor: string) =>
+            changeNoteBackground(selectedNotes.selectedNotes, newColor)
+          }
+          closeBackgroundColorContainer={() =>
+            setIsBackgroundColorContainerOpen(false)
+          }
+        />
+      )}
     </div>
   );
 }

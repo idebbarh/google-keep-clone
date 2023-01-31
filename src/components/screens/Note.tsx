@@ -20,6 +20,7 @@ import {
   selectSelectedNotes,
   unSelectNote,
 } from "../../features/selectedNotesSlice";
+import { selecteGridView } from "../../features/gridViewSlice";
 
 function Note({
   noteTitle,
@@ -56,6 +57,7 @@ function Note({
   const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const selectedNotes = useAppSelector(selectSelectedNotes);
+  const currentGridView = useAppSelector(selecteGridView);
 
   useEffect(() => {
     const bgcRef = backgroundColorsContainerRef.current;
@@ -96,10 +98,12 @@ function Note({
     <div
       className={`flex ${
         colorVariant[noteBackgroundColor]
-      } flex-col justify-between relative w-60 min-h-[100px] border-solid border ${
+      } flex-col justify-between relative ${
+        !currentGridView.isGrid ? "w-full" : "w-60"
+      } min-h-[100px] border-solid border ${
         isNoteSelected() ? "border-transparent" : "border-border-gray"
       }
-       rounded-lg text-main-text-color transition-all duration-300 ease-in-out`}
+       rounded-lg text-main-text-color transition-all duration-300 ease-in-out md:w-full`}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
@@ -205,7 +209,6 @@ function Note({
           changeNoteBackground={(newColor: string) =>
             changeNoteBackground(noteId, newColor)
           }
-          fromWho="note"
         />
       )}
     </div>

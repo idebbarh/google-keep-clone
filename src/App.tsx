@@ -15,7 +15,7 @@ function App(): JSX.Element {
         <Header />
         <div className="flex">
           <SideBar />
-          <div className="w-full">
+          <div className="w-full md:pl-[4.5rem]">
             <Routes>
               <Route
                 path="/"

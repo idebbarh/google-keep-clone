@@ -2,6 +2,9 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   theme: {
+    screens: {
+      md: { max: "612px" },
+    },
     extend: {
       colors: {
         "main-background-color": "#202124",

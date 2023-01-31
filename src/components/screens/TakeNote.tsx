@@ -190,7 +190,6 @@ function TakeNote({
           ref={backgroundColorsContainerRef}
           noteCurrentColor={note.noteBackgroundColor}
           setNote={setNote}
-          fromWho="takeNote"
         />
       )}
     </div>

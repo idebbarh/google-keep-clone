@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import menuStateReducer from "../features/menuStateSlice";
 import selectedNotesReducer from "../features/selectedNotesSlice";
+import gridViewReducer from "../features/gridViewSlice";
 
 export const store = configureStore({
   reducer: {
     menuState: menuStateReducer,
     selectedNotes: selectedNotesReducer,
+    gridView: gridViewReducer,
   },
 });
 
