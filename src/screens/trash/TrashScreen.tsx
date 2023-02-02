@@ -41,8 +41,8 @@ function TrashScreen() {
   }, []);
   return (
     <div
-      className={`py-4 px-10 flex flex-col gap-y-20 ${
-        !currentGridView.isGrid ? "max-w-[680px] mx-auto" : ""
+      className={`py-4 px-10 flex items-start gap-4 flex-wrap ${
+        !currentGridView.isGrid ? "max-w-[680px] mx-auto flex-col" : ""
       }`}
     >
       {notes.map((note) => {

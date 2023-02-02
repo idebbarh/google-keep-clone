@@ -43,6 +43,7 @@ function Note({
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
     useState<boolean>(false);
+  const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
   const {
     archiveNote,
     unArchiveNote,
@@ -55,22 +56,37 @@ function Note({
 
   const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
   const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
+  const noteRef = useRef<HTMLDivElement>(null);
+  const [noteWH, setNoteWH] = useState<{ w: number; h: number } | null>(null);
+  const noteTitleDivRef = useRef<HTMLDivElement>(null);
+  const noteValueDivRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const selectedNotes = useAppSelector(selectSelectedNotes);
   const currentGridView = useAppSelector(selecteGridView);
 
   useEffect(() => {
-    const bgcRef = backgroundColorsContainerRef.current;
-    const iconRef = openBackgroundColorsContainerIconRef.current;
-    if (bgcRef && iconRef) {
-      document.addEventListener("click", handleClickToEveryDomElem);
-    }
+    document.addEventListener("click", handleClickToEveryDomElem);
     return () => {
-      if (bgcRef && iconRef) {
-        document.removeEventListener("click", handleClickToEveryDomElem);
-      }
+      document.removeEventListener("click", handleClickToEveryDomElem);
     };
   }, [isBackgroundColorContainerOpen]);
+
+  useEffect(() => {
+    const noteW = noteRef.current?.clientWidth;
+    const noteH = noteRef.current?.clientHeight;
+    if (noteW && noteH) {
+      setNoteWH(() => ({ w: noteW, h: noteH }));
+    }
+  }, [currentGridView]);
+
+  useEffect(() => {
+    if (noteTitleDivRef.current) {
+      noteTitleDivRef.current.innerHTML = noteTitle;
+    }
+    if (noteValueDivRef.current) {
+      noteValueDivRef.current.innerHTML = noteValue;
+    }
+  }, []);
 
   const handleClickToEveryDomElem = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
@@ -82,11 +98,18 @@ function Note({
     ) {
       setIsBackgroundColorContainerOpen(false);
     }
+    if (
+      !noteRef.current?.isSameNode(target) &&
+      !noteRef.current?.contains(target)
+    ) {
+      updataNoteInfo();
+    }
   };
 
   const isNoteSelected = (): boolean => {
     return selectedNotes.selectedNotes.includes(noteId);
   };
+
   const selectAndUnselectNoteHandler = (): void => {
     if (isNoteSelected()) {
       dispatch(unSelectNote({ noteId: noteId }));
@@ -94,122 +117,157 @@ function Note({
       dispatch(selectNote({ noteId: noteId }));
     }
   };
+
+  const updataNoteInfo = (): void => {
+    setIsInEditMode(false);
+    // print the value of noteValueDivRef and noteTitleDivRef
+    console.log(noteValueDivRef.current?.innerHTML);
+    console.log(noteTitleDivRef.current?.innerHTML);
+  };
   return (
     <div
-      className={`flex ${
-        colorVariant[noteBackgroundColor]
-      } flex-col justify-between relative ${
-        !currentGridView.isGrid ? "w-full" : "w-60"
-      } min-h-[100px] border-solid border ${
-        isNoteSelected() ? "border-transparent" : "border-border-gray"
-      }
-       rounded-lg text-main-text-color transition-all duration-300 ease-in-out md:w-full`}
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
+      className={`${!currentGridView.isGrid ? "w-full" : "w-60"} md:w-full`}
+      style={{
+        height: `${noteWH?.h}px`,
+      }}
     >
       <div
-        className={`absolute w-[calc(100%+6px)] h-[calc(100%+6px)] border-[3px] border-slid border-white left-[-3px] top-[-3px] rounded-lg transition-all duration-300 ease-in-out ${
-          isNoteSelected() ? "opacity-100" : "opacity-0"
-        } z-[-1]`}
-      ></div>
-      <div
-        className={`absolute -left-2.5 -top-2.5 cursor-pointer ${
-          isHover || isNoteSelected() ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-300 ease-in-out z-50 flex justify-center items-center bg-white w-20px h-20px rounded-full text-main-background-color`}
-        onClick={selectAndUnselectNoteHandler}
+        className={`flex ${
+          colorVariant[noteBackgroundColor]
+        } flex-col justify-between border-solid border ${
+          isNoteSelected() ? "border-transparent" : "border-border-gray"
+        }
+rounded-lg text-main-text-color transition-[border-color,background] duration-300 ease-in-out ${
+          isInEditMode
+            ? "fixed left-1/2 top-[170px] translate-x-[-50%] w-[600px] h-40 z-[9999]"
+            : "relative"
+        } min-h-[100px]`}
+        onMouseEnter={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        ref={noteRef}
       >
-        <CheckIcon color="inherit" />
-      </div>
-      <div className="p-4 text-lg flex flex-col gap-0.5">
-        {noteTitle.length > 0 && (
-          <div>
-            <p className="break-all">{noteTitle}</p>
-          </div>
-        )}
-        {noteValue.length > 0 && (
-          <div>
-            <p className="break-all">{noteValue}</p>
-          </div>
-        )}
-      </div>
-      <div
-        className={`flex items-center px-2 pb-1 ${
-          isHover && selectedNotes.selectedNotes.length === 0
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        } transition-opacity duration-300 ease-in-out`}
-      >
-        {/* {!isTrashed && <NoteOptions Icon={AddAlertIcon} />} */}
-        {/* {!isTrashed && <NoteOptions Icon={PersonAddAlt1Icon} />} */}
-        {!isTrashed && (
-          <NoteOptions
-            Icon={ColorLensIcon}
-            action="backgroundcolor"
-            setIsBackgroundColorContainerOpen={() =>
-              setIsBackgroundColorContainerOpen((prevState) => !prevState)
-            }
-            ref={openBackgroundColorsContainerIconRef}
-          />
-        )}
-        {/* {!isTrashed && <NoteOptions Icon={ImageIcon} />} */}
-        {isArchived && !isTrashed && (
-          <NoteOptions
-            Icon={UnarchiveIcon}
-            action="unArchive"
-            unArchive={() => unArchiveNote(noteId)}
-          />
-        )}
+        <div
+          className={`absolute w-[calc(100%+6px)] h-[calc(100%+6px)] border-[3px] border-slid border-white left-[-3px] top-[-3px] rounded-lg transition-all duration-300 ease-in-out ${
+            isNoteSelected() ? "opacity-100" : "opacity-0"
+          } z-[-1]`}
+        ></div>
+        <div
+          className={`absolute -left-2.5 -top-2.5 cursor-pointer ${
+            isHover || isNoteSelected() ? "opacity-100" : "opacity-0"
+          } transition-opacity duration-300 ease-in-out z-50 flex justify-center items-center bg-white w-20px h-20px rounded-full text-main-background-color`}
+          onClick={selectAndUnselectNoteHandler}
+        >
+          <CheckIcon color="inherit" />
+        </div>
+        <div
+          className="p-4 text-lg flex flex-col gap-0.5 cursor-pointer"
+          onClick={() => setIsInEditMode(true)}
+        >
+          {noteTitle.length > 0 && (
+            <div
+              role="textbox"
+              className="break-all outline-none"
+              contentEditable="true"
+              ref={noteTitleDivRef}
+            ></div>
+          )}
+          {noteValue.length > 0 && (
+            <div
+              role="textbox"
+              className="break-all outline-none"
+              contentEditable="true"
+              ref={noteValueDivRef}
+            ></div>
+          )}
+        </div>
+        <div
+          className={`flex items-center px-2 pb-1 ${
+            isHover && selectedNotes.selectedNotes.length === 0
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none"
+          } transition-opacity duration-300 ease-in-out`}
+        >
+          {!isTrashed && (
+            <NoteOptions
+              Icon={ColorLensIcon}
+              action="backgroundcolor"
+              setIsBackgroundColorContainerOpen={() =>
+                setIsBackgroundColorContainerOpen((prevState) => !prevState)
+              }
+              ref={openBackgroundColorsContainerIconRef}
+            />
+          )}
+          {isArchived && !isTrashed && (
+            <NoteOptions
+              Icon={UnarchiveIcon}
+              action="unArchive"
+              unArchive={() => unArchiveNote(noteId)}
+            />
+          )}
 
-        {!isArchived && !isTrashed && (
-          <NoteOptions
-            Icon={ArchiveIcon}
-            action="archive"
-            archive={() => archiveNote(noteId)}
-          />
-        )}
-        {isTrashed && (
-          <NoteOptions
-            Icon={DeleteForeverIcon}
-            action="deleteforever"
-            deleteForEver={() => {
-              deleteNote(noteId);
-            }}
-          />
-        )}
-        {isTrashed && (
-          <NoteOptions
-            Icon={RestoreFromTrashIcon}
-            action="untrash"
-            unTrash={() => {
-              unTrashNote(noteId);
-            }}
-          />
-        )}
-        {!isTrashed && (
-          <NoteOptions
-            Icon={DeleteIcon}
-            action="trash"
-            trash={() => {
-              trashNote(noteId);
-            }}
-          />
-        )}
-        {!isTrashed && (
-          <NoteOptions
-            Icon={isPinned ? PushPinIcon : PushPinOutlinedIcon}
-            action="pin"
-            pinAndUnPin={() => pinAndUnpinNote(noteId)}
+          {!isArchived && !isTrashed && (
+            <NoteOptions
+              Icon={ArchiveIcon}
+              action="archive"
+              archive={() => archiveNote(noteId)}
+            />
+          )}
+          {isTrashed && (
+            <NoteOptions
+              Icon={DeleteForeverIcon}
+              action="deleteforever"
+              deleteForEver={() => {
+                deleteNote(noteId);
+              }}
+            />
+          )}
+          {isTrashed && (
+            <NoteOptions
+              Icon={RestoreFromTrashIcon}
+              action="untrash"
+              unTrash={() => {
+                unTrashNote(noteId);
+              }}
+            />
+          )}
+          {!isTrashed && (
+            <NoteOptions
+              Icon={DeleteIcon}
+              action="trash"
+              trash={() => {
+                trashNote(noteId);
+              }}
+            />
+          )}
+          {!isTrashed && (
+            <NoteOptions
+              Icon={isPinned ? PushPinIcon : PushPinOutlinedIcon}
+              action="pin"
+              pinAndUnPin={() => pinAndUnpinNote(noteId)}
+            />
+          )}
+
+          {isInEditMode && (
+            <button
+              className="bg-none border-none capitalize text-main-text-color text-base font-normal ml-auto rounded-md py-1 px-6 hover:bg-hover-gray"
+              onClick={updataNoteInfo}
+            >
+              close
+            </button>
+          )}
+        </div>
+        {isBackgroundColorContainerOpen && (
+          <BackgroundColorsContainer
+            ref={backgroundColorsContainerRef}
+            noteCurrentColor={noteBackgroundColor}
+            changeNoteBackground={(newColor: string) =>
+              changeNoteBackground(noteId, newColor)
+            }
           />
         )}
       </div>
-      {isBackgroundColorContainerOpen && (
-        <BackgroundColorsContainer
-          ref={backgroundColorsContainerRef}
-          noteCurrentColor={noteBackgroundColor}
-          changeNoteBackground={(newColor: string) =>
-            changeNoteBackground(noteId, newColor)
-          }
-        />
+      {isInEditMode && (
+        <div className="w-screen h-screen fixed left-0 top-0 bg-[rgb(0,0,0,0.7)] z-[9998]"></div>
       )}
     </div>
   );

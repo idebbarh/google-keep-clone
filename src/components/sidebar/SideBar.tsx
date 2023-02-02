@@ -1,8 +1,6 @@
 import React from "react";
 import SideBarOptions from "./SideBarOptions";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import EditIcon from "@mui/icons-material/Edit";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -18,7 +16,7 @@ function SideBar(): JSX.Element {
     <div
       className={`h-[calc(100vh-65px)] z-[999] bg-main-background-color w-fit flex flex-col justify-start pt-2 ${
         !menuState.originState && menuState.tempState ? "shadow-sbs" : ""
-      } md:absolute md:top-[65px] md:left-0`}
+      } sticky left-0 top-[65px] md:fixed`}
       onMouseEnter={
         menuState.originState ? undefined : () => dispatch(toggleTempState())
       }

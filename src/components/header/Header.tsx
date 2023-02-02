@@ -16,7 +16,7 @@ function Header(): JSX.Element {
   const dispatch = useAppDispatch();
   const currentGridView = useAppSelector(selecteGridView);
   return (
-    <header className="flex justify-between items-center p-2 gap-9 border-b-border-gray border-solid border-b">
+    <header className="fixed left-0 top-0 w-full flex justify-between items-center p-2 gap-9 border-b-border-gray border-solid border-b z-[998] bg-main-background-color">
       <div className="flex justify-start items-center gap-2 text-main-text-color pr-9">
         <div onClick={() => dispatch(toggleOriginState())}>
           <IconButton color="inherit" size="large">

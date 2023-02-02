@@ -13,7 +13,7 @@ function App(): JSX.Element {
       <BrowserRouter>
         <SelectedNotesOptionsContainer />
         <Header />
-        <div className="flex">
+        <div className="relative flex pt-[65px]">
           <SideBar />
           <div className="w-full md:pl-[4.5rem]">
             <Routes>
