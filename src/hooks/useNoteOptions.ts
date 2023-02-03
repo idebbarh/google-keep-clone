@@ -59,6 +59,13 @@ export default function useNoteOptions(): TNoteUseOptions {
     const docSnap = await getDoc(docRef);
     return docSnap.data();
   };
+  const editNoteTitleAndValue = async (
+    newValues: { noteTitle: string; noteValue: string },
+    id: string
+  ): Promise<void> => {
+    const docRef = doc(db, "notes", id);
+    await updateDoc(docRef, newValues);
+  };
   return {
     archiveNote,
     unArchiveNote,
@@ -67,5 +74,6 @@ export default function useNoteOptions(): TNoteUseOptions {
     deleteNote,
     changeNoteBackground,
     pinAndUnpinNote,
+    editNoteTitleAndValue,
   };
 }

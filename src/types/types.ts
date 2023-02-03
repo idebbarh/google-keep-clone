@@ -14,6 +14,10 @@ export interface TNoteUseOptions {
     newColor: string
   ) => Promise<void>;
   pinAndUnpinNote: (id: string) => Promise<void>;
+  editNoteTitleAndValue: (
+    newValue: { noteTitle: string; noteValue: string },
+    id: string
+  ) => Promise<void>;
 }
 export interface TNote {
   noteTitle: string;
@@ -98,7 +102,6 @@ export interface TPropsBackgroundColorOption {
   Icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> | null;
   color: string;
   changeNoteBackground?: ((newColor: string) => void) | null;
-  closeBackgroundColorContainer?: (() => void) | null;
 }
 export interface TPropsBackgroundColorsContainer {
   noteCurrentColor?: string | null;
@@ -108,7 +111,6 @@ export interface TPropsBackgroundColorsContainer {
     >
   > | null;
   changeNoteBackground?: ((newColor: string) => void) | null;
-  closeBackgroundColorContainer?: (() => void) | null;
 }
 export interface TPropsSelectedNotesOptions {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;

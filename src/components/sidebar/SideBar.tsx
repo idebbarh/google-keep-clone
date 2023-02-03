@@ -14,7 +14,7 @@ function SideBar(): JSX.Element {
   const dispatch = useAppDispatch();
   return (
     <div
-      className={`h-[calc(100vh-65px)] z-[999] bg-main-background-color w-fit flex flex-col justify-start pt-2 ${
+      className={`h-[calc(100vh-65px)] z-[998] bg-main-background-color w-fit flex flex-col justify-start pt-2 ${
         !menuState.originState && menuState.tempState ? "shadow-sbs" : ""
       } sticky left-0 top-[65px] md:fixed`}
       onMouseEnter={

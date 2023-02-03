@@ -20,17 +20,14 @@ const BackgroundColorsContainer = forwardRef<
   TPropsBackgroundColorsContainer
 >(
   (
-    {
-      noteCurrentColor = null,
-      setNote = null,
-      changeNoteBackground = null,
-      closeBackgroundColorContainer = null,
-    },
+    { noteCurrentColor = null, setNote = null, changeNoteBackground = null },
     ref
   ) => {
     return (
       <div
-        className="absolute shadow-bccs p-2 rounded-md bg-main-background-color top-[calc(100%-16px)] left-12 flex items-center justify-center gap-2 z-50"
+        className={`absolute shadow-bccs p-2 rounded-md bg-main-background-color top-[calc(100%-16px)] ${
+          noteCurrentColor ? "left-1/2 translate-x-[-50%]" : "right-2"
+        } flex items-center justify-center gap-2 z-[999]`}
         ref={ref}
       >
         <BackgroundColorOption
@@ -39,7 +36,6 @@ const BackgroundColorsContainer = forwardRef<
           noteCurrentColor={noteCurrentColor}
           setNote={setNote}
           changeNoteBackground={changeNoteBackground}
-          closeBackgroundColorContainer={closeBackgroundColorContainer}
         />
         {BACKGROUND_COLORS.map((color) => {
           return (
@@ -49,7 +45,6 @@ const BackgroundColorsContainer = forwardRef<
               noteCurrentColor={noteCurrentColor}
               setNote={setNote}
               changeNoteBackground={changeNoteBackground}
-              closeBackgroundColorContainer={closeBackgroundColorContainer}
             />
           );
         })}

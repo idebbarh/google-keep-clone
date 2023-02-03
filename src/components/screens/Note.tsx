@@ -52,6 +52,7 @@ function Note({
     deleteNote,
     changeNoteBackground,
     pinAndUnpinNote,
+    editNoteTitleAndValue,
   } = useNoteOptions();
 
   const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
@@ -86,7 +87,7 @@ function Note({
     if (noteValueDivRef.current) {
       noteValueDivRef.current.innerHTML = noteValue;
     }
-  }, []);
+  }, [noteTitle, noteValue]);
 
   const handleClickToEveryDomElem = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
@@ -120,9 +121,11 @@ function Note({
 
   const updataNoteInfo = (): void => {
     setIsInEditMode(false);
-    // print the value of noteValueDivRef and noteTitleDivRef
-    console.log(noteValueDivRef.current?.innerHTML);
-    console.log(noteTitleDivRef.current?.innerHTML);
+    if (noteTitleDivRef.current && noteValueDivRef.current) {
+      const noteValue: string = noteValueDivRef.current?.innerHTML;
+      const noteTitle: string = noteTitleDivRef.current?.innerHTML;
+      editNoteTitleAndValue({ noteValue, noteTitle }, noteId);
+    }
   };
   return (
     <div
@@ -163,22 +166,35 @@ rounded-lg text-main-text-color transition-[border-color,background] duration-30
           className="p-4 text-lg flex flex-col gap-0.5 cursor-pointer"
           onClick={() => setIsInEditMode(true)}
         >
-          {noteTitle.length > 0 && (
+          {(noteTitle.length > 0 || isInEditMode) && (
             <div
               role="textbox"
-              className="break-all outline-none"
+              className="break-all outline-none empty:before:content-[attr(aria-label)]"
               contentEditable="true"
+              aria-label="title"
+              aria-multiline="true"
               ref={noteTitleDivRef}
             ></div>
           )}
-          {noteValue.length > 0 && (
+          {(noteValue.length > 0 || isInEditMode) && (
             <div
               role="textbox"
-              className="break-all outline-none"
+              className="break-all outline-none empty:before:content-[attr(aria-label)]"
               contentEditable="true"
+              aria-label="note"
+              aria-multiline="true"
               ref={noteValueDivRef}
             ></div>
           )}
+          <div
+            className={`text-gray-400 text-xl font-normal ${
+              noteTitle.length === 0 && noteValue.length === 0 && !isInEditMode
+                ? "block"
+                : "hidden"
+            }`}
+          >
+            Empty note
+          </div>
         </div>
         <div
           className={`flex items-center px-2 pb-1 ${
@@ -204,7 +220,6 @@ rounded-lg text-main-text-color transition-[border-color,background] duration-30
               unArchive={() => unArchiveNote(noteId)}
             />
           )}
-
           {!isArchived && !isTrashed && (
             <NoteOptions
               Icon={ArchiveIcon}

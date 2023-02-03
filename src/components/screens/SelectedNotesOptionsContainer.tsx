@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   selectSelectedNotes,
@@ -28,6 +28,12 @@ function SelectedNotesOptionsContainer() {
   const openBackgroundColorsContainerIconRef = useRef<HTMLDivElement>(null);
   const backgroundColorsContainerRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (selectedNotes.selectedNotes.length === 0) {
+      setIsBackgroundColorContainerOpen(false);
+    }
+  }, [selectedNotes.selectedNotes.length]);
   return (
     <div
       className={`fixed left-0 top-0 w-full min-h-[65px] z-[999] flex justify-between items-center p-2 gap-9 border-b-border-gray border-solid border-b bg-main-background-color ${
@@ -35,6 +41,7 @@ function SelectedNotesOptionsContainer() {
           ? "translate-y-0 opacity-100"
           : "translate-y-[-100%] opacity-0"
       } transition-all duration-500 ease-in-out`}
+      ref={containerRef}
     >
       <div className="flex items-center gap-2">
         <div
@@ -97,9 +104,6 @@ function SelectedNotesOptionsContainer() {
           ref={backgroundColorsContainerRef}
           changeNoteBackground={(newColor: string) =>
             changeNoteBackground(selectedNotes.selectedNotes, newColor)
-          }
-          closeBackgroundColorContainer={() =>
-            setIsBackgroundColorContainerOpen(false)
           }
         />
       )}

@@ -10,7 +10,6 @@ function BackgroundColorOption({
   noteCurrentColor,
   setNote,
   changeNoteBackground,
-  closeBackgroundColorContainer,
 }: TPropsBackgroundColorOption): JSX.Element {
   const dispatch = useAppDispatch();
   const handleClick = (): void => {
@@ -18,10 +17,7 @@ function BackgroundColorOption({
       setNote((prevSate) => ({ ...prevSate, noteBackgroundColor: color }));
     } else if (changeNoteBackground) {
       changeNoteBackground(color);
-      if (closeBackgroundColorContainer) {
-        dispatch(unSelectAllNotes());
-        closeBackgroundColorContainer();
-      }
+      dispatch(unSelectAllNotes());
     }
   };
   return (
