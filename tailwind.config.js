@@ -23,6 +23,8 @@ module.exports = {
         tns: "0 3px 5px rgb(0 0 0 / 20%)",
         /* background colors container shadow */
         bccs: "0 1px 2px 0 rgb(0 0 0 / 60%), 0 2px 6px 2px rgb(0 0 0 / 30%)",
+        /*search by color container shadow */
+        sbcc: "0 1px 2px 0 rgb(0 0 0 / 60%), 0 1px 3px 1px rgb(0 0 0 / 30%)",
       },
     },
   },

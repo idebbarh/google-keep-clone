@@ -1,48 +1,16 @@
-import {
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import TakeNote from "../../components/screens/TakeNote";
 import Note from "../../components/screens/Note";
-import { db } from "../../firebase/firebase";
 import useNote from "../../hooks/useNote";
 import { useAppSelector } from "../../app/hooks";
 import { selecteGridView } from "../../features/gridViewSlice";
-function HomeScreen() {
+import { TPropsScreens } from "../../types/types";
+function HomeScreen({ notes }: TPropsScreens) {
   const currentGridView = useAppSelector(selecteGridView);
-  const { note, setNote, notes, setNotes, clearNote } = useNote();
+  const { note, setNote, clearNote } = useNote();
   const [numberOfPinnedNotes, setNumberOfPinnedNotes] = useState<number>(
     notes.filter((note) => note.isPinned).length
   );
-  useEffect(() => {
-    const q = query(
-      collection(db, "notes"),
-      orderBy("createdAt", "desc"),
-      where("isArchived", "==", false),
-      where("isTrashed", "==", false)
-    );
-    const usub = onSnapshot(q, (querySnaphot) => {
-      setNotes(
-        querySnaphot.docs.map((doc) => {
-          return {
-            noteTitle: doc.data().noteTitle,
-            noteValue: doc.data().noteValue,
-            createdAt: doc.data().createdAt,
-            isArchived: doc.data().isArchived,
-            isTrashed: doc.data().isTrashed,
-            noteId: doc.id,
-            noteBackgroundColor: doc.data().noteBackgroundColor,
-            isPinned: doc.data().isPinned,
-          };
-        })
-      );
-    });
-    return usub;
-  }, []);
   useEffect(() => {
     setNumberOfPinnedNotes(notes.filter((note) => note.isPinned).length);
   }, [notes]);
@@ -55,7 +23,7 @@ function HomeScreen() {
         notes={notes}
       />
       <div
-        className={`py-4 px-10 flex flex-col gap-y-20 ${
+        className={`py-4 flex flex-col gap-y-20 ${
           !currentGridView.isGrid ? "max-w-[680px] mx-auto" : ""
         }`}
       >
@@ -71,8 +39,12 @@ function HomeScreen() {
                 !currentGridView.isGrid ? "flex-col" : ""
               } items-start gap-4 flex-wrap`}
             >
+              {/* where("isArchived", "==", false), */}
+              {/* where("isTrashed", "==", false) */}
               {notes
-                .filter((note) => note.isPinned)
+                .filter(
+                  (note) => note.isPinned && !note.isArchived && !note.isTrashed
+                )
                 .map((note) => {
                   return (
                     <Note
@@ -104,7 +76,10 @@ function HomeScreen() {
               } items-start gap-4 flex-wrap`}
             >
               {notes
-                .filter((note) => !note.isPinned)
+                .filter(
+                  (note) =>
+                    !note.isPinned && !note.isArchived && !note.isTrashed
+                )
                 .map((note) => {
                   return (
                     <Note

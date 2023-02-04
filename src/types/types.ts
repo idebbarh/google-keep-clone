@@ -66,6 +66,7 @@ export interface TPropsTakeNoteOptions {
   undoAndRedoStoreSize?: number | null;
   undoAndRedoStoreIndex?: number | null;
 }
+
 export interface TTakeNoteUseOptions {
   addInTheRedoAndUndoStore: (value: string) => void;
   undo: (
@@ -122,4 +123,7 @@ export interface TPropsSideBarOptions {
   title: string;
   page?: string;
   isLink: true | false;
+}
+export interface TPropsScreens {
+  notes: TNote[];
 }

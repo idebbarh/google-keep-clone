@@ -21,6 +21,7 @@ import {
   unSelectNote,
 } from "../../features/selectedNotesSlice";
 import { selecteGridView } from "../../features/gridViewSlice";
+import { current } from "@reduxjs/toolkit";
 
 function Note({
   noteTitle,
@@ -78,7 +79,7 @@ function Note({
     if (noteW && noteH) {
       setNoteWH(() => ({ w: noteW, h: noteH }));
     }
-  }, [currentGridView]);
+  }, [noteTitle, noteValue, currentGridView]);
 
   useEffect(() => {
     if (noteTitleDivRef.current) {

@@ -1,18 +1,16 @@
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Avatar, IconButton } from "@mui/material";
 import logo from "../../assets/images/header-logo.png";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
 import SplitscreenIcon from "@mui/icons-material/Splitscreen";
 import HeaderRightSideOptions from "../header/HeaderRightSideOptions";
 import GridViewIcon from "@mui/icons-material/GridView";
 import { useAppDispatch, useAppSelector } from "../..//app/hooks";
 import { toggleOriginState } from "../../features/menuStateSlice";
 import { changeGridView, selecteGridView } from "../../features/gridViewSlice";
+import SearchBar from "./SearchBar";
 
 function Header(): JSX.Element {
-  const [searchValue, setSearchValue] = useState<string>("");
   const dispatch = useAppDispatch();
   const currentGridView = useAppSelector(selecteGridView);
   return (
@@ -28,27 +26,7 @@ function Header(): JSX.Element {
           <span className="ml-1 text-2xl font-normal">Keep</span>
         </div>
       </div>
-      <div className="flex-1">
-        <form className="h-12 text-main-text-color flex items-center p-1 bg-input-gray rounded-lg max-w-[700px]">
-          <IconButton color="inherit" size="large">
-            <SearchIcon />
-          </IconButton>
-          <input
-            type="text"
-            name="searchValue"
-            value={searchValue}
-            className="block h-full border-none outline-none bg-transparent w-full text-main-text-color placeholder:text-main-text-color"
-            placeholder="Search"
-            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-              setSearchValue(e.target.value)
-            }
-          />
-
-          <IconButton color="inherit" size="large">
-            <CloseIcon />
-          </IconButton>
-        </form>
-      </div>
+      <SearchBar />
       <div className="flex justify-end items-center gap-2 text-icons-color">
         <HeaderRightSideOptions
           Icon={currentGridView.isGrid ? SplitscreenIcon : GridViewIcon}
