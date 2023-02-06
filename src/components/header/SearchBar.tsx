@@ -1,8 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useRef } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { IconButton } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
 
 function SearchBar() {
   const [searchValue, setSearchValue] = useState<{
@@ -10,23 +11,20 @@ function SearchBar() {
     isCleaer: boolean;
   }>({ value: "", isCleaer: false });
   const navigate = useNavigate();
-  const prevPath = React.useRef<string>();
+  const prevPath = useRef<string>();
 
-  //this changes prevPath every time when we change the path and it is not /search and /search/ + any value
+  //this changes prevPath every time when we change the path and it is not /search and /search/ + any thing after it
   React.useEffect(() => {
-    if (
-      window.location.pathname !== "/search" &&
-      !window.location.pathname.match(/^\/search\/.+/)
-    ) {
+    if (!window.location.pathname.includes("/search")) {
       prevPath.current = window.location.pathname;
     }
   }, [window.location.pathname]);
 
   //this changes path every time when we type something in search bar and it is not empty if it is empty it will go to /search or if we clear the search bar it will go to /home
   React.useEffect(() => {
-    if (!["/home", "/archive", "/trash"].includes(window.location.pathname)) {
+    if (window.location.pathname.includes("/search")) {
       if (searchValue.value) {
-        navigate(`/search/text/${searchValue.value}`);
+        navigate(`/search/result/?text=${searchValue.value}`);
       } else {
         if (!searchValue.isCleaer) {
           navigate("/search");
@@ -37,10 +35,7 @@ function SearchBar() {
 
   //this navigates to /search when we focus on search bar and it is not /search or /search/+ any value
   const focusHandler = (): void => {
-    if (
-      window.location.pathname !== "/search" &&
-      !window.location.pathname.match(/^\/search\/.+/)
-    ) {
+    if (!window.location.pathname.includes("/search")) {
       navigate("/search");
     }
   };
@@ -48,7 +43,7 @@ function SearchBar() {
   //this clears the search bar and navigates to /home or to the previous path if not null
   const closeSearchHandler = (): void => {
     setSearchValue({ value: "", isCleaer: true });
-    if (prevPath.current && prevPath.current !== "/search") {
+    if (prevPath.current) {
       navigate(prevPath.current);
     } else {
       navigate("/home");
@@ -85,4 +80,5 @@ function SearchBar() {
     </div>
   );
 }
+
 export default SearchBar;

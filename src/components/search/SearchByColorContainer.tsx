@@ -14,7 +14,9 @@ function SearchByColorContainer({ colors }: TPropsSearchByColorContainer) {
           <div
             key={color}
             className={`rounded-full w-12 h-12 ${colorVariant[color]} border border-border-gray border-solid cursor-pointer hover:border-main-text-color`}
-            onClick={() => navigate(`/search/color/${color}`)}
+            onClick={() =>
+              navigate(`/search/result/?color=${encodeURIComponent(color)}`)
+            }
           ></div>
         ))}
       </div>

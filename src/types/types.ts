@@ -57,6 +57,16 @@ export interface TGridView {
     isGrid: boolean;
   };
 }
+
+export interface TParams {
+  value: {
+    params: {
+      color: string | null;
+      text: string | null;
+    };
+  };
+}
+
 export interface TPropsTakeNoteOptions {
   Icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
   action?: string | null;
