@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 import { TParams } from "../types/types";
 
@@ -15,7 +15,13 @@ export const ParamsSlice = createSlice({
   name: "params",
   initialState,
   reducers: {
-    changeParams: (state, action) => {
+    changeParams: (
+      state,
+      action: PayloadAction<{
+        paramName: string;
+        paramValue: string | null;
+      }>
+    ) => {
       state.value.params = {
         ...state.value.params,
         [action.payload.paramName]: action.payload.paramValue,
@@ -27,7 +33,7 @@ export const ParamsSlice = createSlice({
   },
 });
 
-export const { changeParams } = ParamsSlice.actions;
+export const { changeParams, clearParams } = ParamsSlice.actions;
 
 export const selectParams = (state: RootState) => state.params.value;
 

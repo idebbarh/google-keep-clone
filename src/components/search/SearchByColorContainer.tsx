@@ -1,11 +1,12 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../app/hooks";
+import { changeParams } from "../../features/paramsSlice";
 import { colorVariant } from "../../utils/colorVariant";
 type TPropsSearchByColorContainer = {
   colors: Set<string>;
 };
 function SearchByColorContainer({ colors }: TPropsSearchByColorContainer) {
-  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   return (
     <div className="bg-[#28292c] mt-8 mb-4 px-4 py-2 mx-auto max-w-[600px] shadow-sbcc text-main-text-color">
       <h3 className="mb-4 font-normal text-lg capitalize">color</h3>
@@ -15,7 +16,7 @@ function SearchByColorContainer({ colors }: TPropsSearchByColorContainer) {
             key={color}
             className={`rounded-full w-12 h-12 ${colorVariant[color]} border border-border-gray border-solid cursor-pointer hover:border-main-text-color`}
             onClick={() =>
-              navigate(`/search/result/?color=${encodeURIComponent(color)}`)
+              dispatch(changeParams({ paramName: "color", paramValue: color }))
             }
           ></div>
         ))}

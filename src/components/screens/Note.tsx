@@ -31,6 +31,7 @@ function Note({
   noteId,
   noteBackgroundColor,
   isPinned,
+  fromSearch = null,
 }: Pick<
   TNote,
   | "noteTitle"
@@ -40,7 +41,7 @@ function Note({
   | "isTrashed"
   | "noteBackgroundColor"
   | "isPinned"
->) {
+> & { fromSearch?: { searchValue: string | null } | null }) {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
     useState<boolean>(false);
@@ -83,12 +84,28 @@ function Note({
 
   useEffect(() => {
     if (noteTitleDivRef.current) {
-      noteTitleDivRef.current.innerHTML = noteTitle;
+      if (fromSearch && fromSearch.searchValue && !isInEditMode) {
+        noteTitleDivRef.current.innerHTML = noteTitle.replace(
+          new RegExp(fromSearch.searchValue, "gi"),
+          (match) =>
+            `<span style='background:#fdd663;color:black'>${match}</span>`
+        );
+      } else {
+        noteTitleDivRef.current.innerHTML = noteTitle;
+      }
     }
     if (noteValueDivRef.current) {
-      noteValueDivRef.current.innerHTML = noteValue;
+      if (fromSearch && fromSearch.searchValue && !isInEditMode) {
+        noteValueDivRef.current.innerHTML = noteValue.replace(
+          new RegExp(fromSearch.searchValue, "gi"),
+          (match) =>
+            `<span style='background:#fdd663;color:black'>${match}</span>`
+        );
+      } else {
+        noteValueDivRef.current.innerHTML = noteValue;
+      }
     }
-  }, [noteTitle, noteValue]);
+  }, [noteTitle, noteValue, fromSearch, isInEditMode]);
 
   const handleClickToEveryDomElem = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;

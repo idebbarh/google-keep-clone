@@ -11,7 +11,7 @@ import SelectedNotesOptionsContainer from "./components/screens/SelectedNotesOpt
 import useNote from "./hooks/useNote";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "./firebase/firebase";
-import SearchResult from "./screens/search/SearchResult";
+
 function App(): JSX.Element {
   const { notes, setNotes } = useNote();
   useEffect(() => {
@@ -34,6 +34,7 @@ function App(): JSX.Element {
     });
     return usub;
   }, []);
+
   return (
     <div className="app">
       <BrowserRouter>
@@ -54,10 +55,6 @@ function App(): JSX.Element {
               />
               <Route path="/trash" element={<TrashScreen notes={notes} />} />
               <Route path="/search" element={<SearchScreen notes={notes} />} />
-              <Route
-                path="/search/result"
-                element={<SearchResult notes={notes} />}
-              />
             </Routes>
           </div>
         </div>
