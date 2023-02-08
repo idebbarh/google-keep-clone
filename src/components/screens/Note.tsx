@@ -46,6 +46,7 @@ function Note({
   const [isBackgroundColorContainerOpen, setIsBackgroundColorContainerOpen] =
     useState<boolean>(false);
   const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
+  const isInEditModeRef = useRef(isInEditMode);
   const {
     archiveNote,
     unArchiveNote,
@@ -73,6 +74,10 @@ function Note({
       document.removeEventListener("click", handleClickToEveryDomElem);
     };
   }, [isBackgroundColorContainerOpen]);
+
+  useEffect(() => {
+    isInEditModeRef.current = isInEditMode;
+  }, [isInEditMode]);
 
   useEffect(() => {
     const noteW = noteRef.current?.clientWidth;
@@ -119,9 +124,10 @@ function Note({
     }
     if (
       !noteRef.current?.isSameNode(target) &&
-      !noteRef.current?.contains(target)
+      !noteRef.current?.contains(target) &&
+      isInEditModeRef.current
     ) {
-      updataNoteInfo();
+      updateNoteInfo();
     }
   };
 
@@ -137,13 +143,13 @@ function Note({
     }
   };
 
-  const updataNoteInfo = (): void => {
-    setIsInEditMode(false);
+  const updateNoteInfo = (): void => {
     if (noteTitleDivRef.current && noteValueDivRef.current) {
       const noteValue: string = noteValueDivRef.current?.innerHTML;
       const noteTitle: string = noteTitleDivRef.current?.innerHTML;
       editNoteTitleAndValue({ noteValue, noteTitle }, noteId);
     }
+    setIsInEditMode(false);
   };
   return (
     <div
@@ -283,7 +289,7 @@ rounded-lg text-main-text-color transition-[border-color,background] duration-30
           {isInEditMode && (
             <button
               className="bg-none border-none capitalize text-main-text-color text-base font-normal ml-auto rounded-md py-1 px-6 hover:bg-hover-gray"
-              onClick={updataNoteInfo}
+              onClick={updateNoteInfo}
             >
               close
             </button>

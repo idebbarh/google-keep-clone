@@ -1,7 +1,8 @@
 import { Timestamp } from "firebase/firestore";
-import { Dispatch, SetStateAction } from "react";
-import { SvgIconTypeMap } from "@mui/material";
+import { ComponentType, Dispatch, SetStateAction } from "react";
+import { AvatarProps, SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { userInfo } from "os";
 
 export interface TNoteUseOptions {
   archiveNote: (id: string) => Promise<void>;
@@ -64,6 +65,20 @@ export interface TParams {
       color: string | null;
       text: string | null;
     };
+  };
+}
+
+export interface TUserInfo {
+  value: {
+    userInfo:
+      | {
+          email: string | null;
+          uid: string;
+          displayName: string | null;
+          photoURL: string | null;
+        }
+      | null
+      | undefined;
   };
 }
 
@@ -136,4 +151,13 @@ export interface TPropsSideBarOptions {
 }
 export interface TPropsScreens {
   notes: TNote[];
+}
+
+export interface TPropsHeaderRightSideOptions {
+  //type of the avatar
+  Icon:
+    | OverridableComponent<SvgIconTypeMap<{}, "svg">>
+    | ComponentType<AvatarProps>;
+  type: string;
+  toggleGridView?: (() => void) | null;
 }
