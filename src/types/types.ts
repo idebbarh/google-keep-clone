@@ -154,7 +154,6 @@ export interface TPropsScreens {
 }
 
 export interface TPropsHeaderRightSideOptions {
-  //type of the avatar
   Icon:
     | OverridableComponent<SvgIconTypeMap<{}, "svg">>
     | ComponentType<AvatarProps>;

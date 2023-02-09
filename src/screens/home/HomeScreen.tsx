@@ -29,18 +29,14 @@ function HomeScreen({ notes }: TPropsScreens) {
       >
         {numberOfPinnedNotes > 0 && (
           <div>
-            {numberOfPinnedNotes > 0 && (
-              <h3 className="text-[#9aa0a6] pl-4 pb-2 uppercase font-normal text-xs">
-                pinned
-              </h3>
-            )}
+            <h3 className="text-[#9aa0a6] pl-4 pb-2 uppercase font-normal text-xs">
+              pinned
+            </h3>
             <div
               className={`flex ${
                 !currentGridView.isGrid ? "flex-col" : ""
               } items-start gap-4 flex-wrap`}
             >
-              {/* where("isArchived", "==", false), */}
-              {/* where("isTrashed", "==", false) */}
               {notes
                 .filter(
                   (note) => note.isPinned && !note.isArchived && !note.isTrashed
@@ -62,8 +58,9 @@ function HomeScreen({ notes }: TPropsScreens) {
             </div>
           </div>
         )}
-
-        {numberOfPinnedNotes !== notes.length && (
+        {notes.filter(
+          (note) => !note.isTrashed && !note.isArchived && !note.isPinned
+        ).length > 0 && (
           <div>
             {numberOfPinnedNotes > 0 && (
               <h3 className="text-[#9aa0a6] pl-4 pb-2 uppercase font-normal text-xs">

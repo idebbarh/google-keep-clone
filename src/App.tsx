@@ -9,7 +9,13 @@ import ArchiveScreen from "./screens/archive/ArchiveScreen";
 import SearchScreen from "./screens/search/SearchScreen";
 import SelectedNotesOptionsContainer from "./components/screens/SelectedNotesOptionsContainer";
 import useNote from "./hooks/useNote";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { auth, db } from "./firebase/firebase";
 import { useAppDispatch, useAppSelector } from "./app/hooks";
 import { changeUserInfo, selectUserInfo } from "./features/userInfoSlice";
@@ -21,6 +27,7 @@ function App(): JSX.Element {
   const { notes, setNotes } = useNote();
   const userInfo = useAppSelector(selectUserInfo);
   const dispatch = useAppDispatch();
+
   const LoginRedicter = () =>
     useRoutes([
       ...["/", "/home", "/archive", "/trash", "/search"].map((path) => ({
@@ -29,26 +36,36 @@ function App(): JSX.Element {
       })),
       { path: "/login", element: <LoginScreen /> },
     ]);
+
   useEffect(() => {
-    const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
-    const usub = onSnapshot(q, (querySnaphot) => {
-      setNotes(
-        querySnaphot.docs.map((doc) => {
-          return {
-            noteTitle: doc.data().noteTitle,
-            noteValue: doc.data().noteValue,
-            createdAt: doc.data().createdAt,
-            isArchived: doc.data().isArchived,
-            isTrashed: doc.data().isTrashed,
-            noteId: doc.id,
-            noteBackgroundColor: doc.data().noteBackgroundColor,
-            isPinned: doc.data().isPinned,
-          };
-        })
+    const userId = userInfo?.uid;
+    if (userId) {
+      const userRef = doc(db, "users", userId);
+      const q = query(
+        collection(userRef, "notes"),
+        orderBy("createdAt", "desc")
       );
-    });
-    return usub;
-  }, []);
+      const usub = onSnapshot(q, (querySnaphot) => {
+        setNotes(
+          querySnaphot.docs.map((doc) => {
+            return {
+              noteTitle: doc.data().noteTitle,
+              noteValue: doc.data().noteValue,
+              createdAt: doc.data().createdAt,
+              isArchived: doc.data().isArchived,
+              isTrashed: doc.data().isTrashed,
+              noteId: doc.id,
+              noteBackgroundColor: doc.data().noteBackgroundColor,
+              isPinned: doc.data().isPinned,
+            };
+          })
+        );
+      });
+      return usub;
+    } else {
+      setNotes([]);
+    }
+  }, [userInfo]);
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -81,7 +98,7 @@ function App(): JSX.Element {
       <Header />
       <div className="relative flex pt-[65px]">
         <SideBar />
-        <div className="px-10 w-full md:pl-[4.5rem]">
+        <div className="px-10 w-full md:pl-[4.8rem]">
           <Routes>
             <Route path="/" element={<Navigate to="/home" replace={true} />} />
             <Route

@@ -21,6 +21,8 @@ import { TUseNote } from "../../types/types";
 import useTakeNoteOptions from "../../hooks/useTakeNoteOptions";
 import BackgroundColorsContainer from "./BackgroundColorsContainer";
 import { colorVariant } from "../../utils/colorVariant";
+import { useAppSelector } from "../../app/hooks";
+import { selectUserInfo } from "../../features/userInfoSlice";
 
 function TakeNote({
   note,
@@ -46,6 +48,7 @@ function TakeNote({
     note: note,
     notes: notes,
   });
+  const userInfo = useAppSelector(selectUserInfo);
 
   useEffect(() => {
     stateRef.current = {
@@ -95,13 +98,17 @@ function TakeNote({
 
   const addNoteToNotes = async () => {
     try {
-      await addDoc(collection(db, "notes"), {
-        ...stateRef.current?.note,
-        createdAt: serverTimestamp(),
-        isArchived: false,
-        isTrashed: false,
-        isPinned: false,
-      });
+      //add note to inside users collections inside userId collection
+      const userId = userInfo?.uid;
+      if (userId) {
+        await addDoc(collection(db, "users", userId, "notes"), {
+          ...stateRef.current?.note,
+          createdAt: serverTimestamp(),
+          isArchived: false,
+          isTrashed: false,
+          isPinned: false,
+        });
+      }
     } catch (err) {
       alert(err);
     }

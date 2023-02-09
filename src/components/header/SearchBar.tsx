@@ -11,6 +11,7 @@ import {
 } from "../../features/paramsSlice";
 
 function SearchBar() {
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const navigate = useNavigate();
   const prevPath = useRef<string>();
   const dispatch = useAppDispatch();
@@ -18,21 +19,20 @@ function SearchBar() {
 
   const [searchParams] = useSearchParams();
   const searchColor = searchParams.get("color");
-  //this changes prevPath every time when we change the path and it is not /search and /search/ + any thing after it
+
   React.useEffect(() => {
     if (!window.location.pathname.includes("/search")) {
       prevPath.current = window.location.pathname;
     }
   }, [window.location.pathname]);
 
-  //this navigates to /search when we focus on search bar and it is not /search or /search/+ any value
   const focusHandler = (e: React.FocusEvent<HTMLInputElement>): void => {
+    setIsInputFocused(true);
     if (e.target.value.length === 0 && !searchColor) {
       navigate("/search");
     }
   };
 
-  //this clears the search bar and navigates to /home or to the previous path if not null
   const closeSearchHandler = (): void => {
     dispatch(clearParams());
     if (prevPath.current) {
@@ -42,8 +42,6 @@ function SearchBar() {
     }
   };
 
-  //this changes the search value and isCleaer to false when we type something in search bar
-  //(isCleaer is used to navigate to /home or to the previous path when we clear the search bar, when it is false it will not navigate to /home or to the previous path)
   const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
     dispatch(
       changeParams({
@@ -58,7 +56,13 @@ function SearchBar() {
 
   return (
     <div className="flex-1">
-      <form className="h-12 text-main-text-color flex items-center p-1 bg-input-gray rounded-lg max-w-[700px]">
+      <form
+        className={`h-12 flex items-center p-1 ${
+          isInputFocused
+            ? "bg-white text-main-background-color"
+            : "bg-input-gray text-main-text-color"
+        } rounded-lg max-w-[700px] transition-all duration-300 ease-in-out`}
+      >
         <IconButton color="inherit" size="large">
           <SearchIcon />
         </IconButton>
@@ -66,10 +70,19 @@ function SearchBar() {
           type="text"
           name="searchValue"
           value={params.text || ""}
-          className="block h-full border-none outline-none bg-transparent w-full text-main-text-color placeholder:text-main-text-color"
+          className={`block h-full border-none outline-none bg-transparent w-full ${
+            isInputFocused
+              ? "text-main-background-color"
+              : "text-main-text-color"
+          } placeholder:${
+            isInputFocused
+              ? "text-main-background-color"
+              : "text-main-text-color"
+          }`}
           placeholder="Search"
           onChange={inputChangeHandler}
           onFocus={focusHandler}
+          onBlur={() => setIsInputFocused(false)}
         />
         <div onClick={closeSearchHandler}>
           <IconButton color="inherit" size="large">

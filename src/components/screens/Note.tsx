@@ -166,7 +166,7 @@ function Note({
         }
 rounded-lg text-main-text-color transition-[border-color,background] duration-300 ease-in-out ${
           isInEditMode
-            ? "fixed left-1/2 top-[170px] translate-x-[-50%] w-[600px] h-40 z-[9999]"
+            ? "fixed left-1/2 top-[170px] translate-x-[-50%] w-[600px] max-w-[calc(100%-30px)] h-40 z-[9999]"
             : "relative"
         } min-h-[100px]`}
         onMouseEnter={() => setIsHover(true)}
