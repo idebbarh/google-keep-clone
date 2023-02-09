@@ -55,3 +55,7 @@ These instructions will get you a copy of the project up and running on your loc
 ## Acknowledgments
 
 - [Google Keep](https://keep.google.com/) - The inspiration for this project
+
+## Preview
+
+Check out the live version of the web app at [Google keep clone](https://keep-clone-r.web.app/).
